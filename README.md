@@ -2,10 +2,26 @@
 
 Kulang pa dito ay:
  1. User/Admin interface
- 2. archive books are sorted sa kanilang catalog
- 3. buying
- 4. resibo
-
+  1.1. back to first panel
+  
+ 2. search(func)
+  2.1. archive books are sorted sa kanilang catalog
+       - author
+       - price
+       - title
+       
+ 3. user()
+    3.1 show recent bought book
+    3.2 show history of transactions
+    
+ 4. buying()
+    4.1 Discount / Promo / Voucher
+    4.2 using the Func::seach() to sort the query
+    
+ 5. resibo()
+    > redirect the information of picked book into a file
+    > formatted using the buying()
+ 
 Aayusin lang muna sa version na ito ay:
  1. mga class objects, yung sa main features eg. insert, search...
     1.1 hihiwalay/organize nalang yung mga helper functions
