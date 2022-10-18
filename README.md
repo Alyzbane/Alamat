@@ -28,3 +28,4 @@ Aayusin lang muna sa version na ito ay:
  2. exception handling 
     i.e. mga int at double error inputs pag may bagong enter na data
  3. struct or vector class sa paghahandle ng mga catalog
+ 4. Adding discount to the books 
