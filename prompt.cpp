@@ -1,69 +1,81 @@
 #include <iostream>
 #include <string>
 #include "prompt.h"
+/* The "prompt.h" handle every user calls to the interface
+ * functions from "menu.h"
+ *
+ */
 
 using std::string;
 using std::cout;
 using std::cin;
 using std::cerr;
 using std::endl;
+using std::runtime_error;
 
-namespace Prompt
+namespace Prompt //start of prompt 
 {
-    
-void show_menu(void)
-{
-     cout << "\nWhat would you like to do? " << endl;
-        cout << "\t=================================================\n"
-                "\t| s\t - search a book\t\t\t|\n"
-                "\t| p\t - show all of the books in archive\t|\n"
-                "\t| h\t - show the history of browsed books \t|\n"
-                "\t| i\t - insert books in archive \t\t|\n"
-                "\t| ?\t - show menu\t\t\t\t|\n"
-                "\t| q\t - quit \t\t\t\t|\n"
-                "\t================================================="
-                << endl;
-}
-    
-char prompt_cmd(const string &message)
-{
-    char response;
 
+int prompt_cmd(const string &message)
+    //taking the command option
+{
+    int n = 0;
     cout << message;
 
-    cin >> response; //prompt
-    response = tolower(response); //lower input
-    cin.get(); //discard newline from input stream
-
-    return response;
+    while(true)
+    {
+        if(cin >> n) return n;
+        
+        cout << "Not a number\n";
+        skip_to_int();
+    }
 }
-
-bool legal(char c) 
+bool legal(int c) 
 {
     //determine if the input command is legal
     //used in getcmd
-    return ((c == 'i') || (c == 's') || (c == 'p') ||
-            (c == 'q') || (c == 'u') || (c == 'b') ||
-            (c == '?'));
+    return ((c == 0) || (c == 1) || (c == 2) ||
+            (c == 3) || (c == 4) || (c == 5) ||
+            (c == 6));
 }
 
-char get_cmd(void)
+//used by "alamat.cc" source file
+int get_cmd(void)
 {
-    char cmd = prompt_cmd("\n\n->"); //1st prompt_cmd
+   int cmd = prompt_cmd("\n\n->"); //1st prompt_cmd
 
     while(!legal(cmd))
     {
-        cerr << "Illegal command...\n";
+       cerr << "Illegal command...\n";
 
-        //prompt again
-        show_menu();
-        cmd = prompt_cmd("\n\n->");
+       cmd = prompt_cmd("\n\n->");  //taking cmd again
     }
 
     return cmd;
 }
 
+//utility functions 
+//throwing errors
+void error (const string &message)
+{
+    throw std::runtime_error(message); 
+}
+
+//checking if the input is true to its datatype
+void skip_to_int(void)
+{
+    if(cin.fail()) //input is not integer
+        cin.clear(); //remove all inputs in the buffer
+    
+    for(unsigned char ch; cin >>ch;)
+    {
+        if(isdigit(ch))
+        {
+            cin.unget(); //give back the int
+            return; //use it
+        }
+    }
+    error("No input\n");
+}
+
 } //end of prompt
-
-
-

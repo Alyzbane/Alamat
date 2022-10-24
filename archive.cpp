@@ -6,7 +6,6 @@
 
 /*
  * Created: 10/6/2022
- * Author: Prince Daniel D. Mampusti
  *
  * Class Functions mainly
  * for Inserting books in the archive*/

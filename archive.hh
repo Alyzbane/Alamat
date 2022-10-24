@@ -18,7 +18,6 @@ struct Archive
 
 class Book 
 {
-
     private:
         Archive *head;
     public:
