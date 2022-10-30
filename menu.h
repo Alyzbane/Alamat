@@ -5,8 +5,9 @@
  * para makita kung anong menu ang ibibigay
  * sa main(alamat.cc) source file
  * */
+
 #include "prompt.h"
-#include "archive.hh"
+#include "archive.h"
 
 
 namespace Menu
@@ -16,11 +17,13 @@ namespace Menu
 void main_menu(void);
 void admin_menu(void);
 void user_menu(void);
+void update_menu(void);
 
 //prompting the user
 void show_user (Book& book, bool& state);
 void show_admin (Book& book, bool& state);
 int show_main (bool& state);
+void update_book (int& goods, double& cost);
 
 }
 #endif

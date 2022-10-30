@@ -1,8 +1,10 @@
 #include <iostream>
 #include <iomanip>
-#include <new>
 #include <cstdlib>
-#include "archive.hh"
+#include "archive.h"
+#include "menu.h"  //use by updt_book function to display update prompts
+#include "prompt.h" //using the prompt(string) to take numbers
+
 
 /*
  * Created: 10/6/2022
@@ -18,6 +20,8 @@ using std::setw;
 using std::setfill;
 using std::left;
 using std::right;
+using std::getline;
+using std::string;
 
 Archive *find_entry(Archive *head, const int &n)
 {
@@ -37,8 +41,6 @@ Archive *find_entry(Archive *head, const int &n)
         return nullptr; //number does not exist in archive list
 }
 
-
-
 Archive *entry_datas(Archive *node)
 {
     Archive *p = node;
@@ -52,11 +54,9 @@ Archive *entry_datas(Archive *node)
     cout << "ISBN:\t";
     std::getline(cin >> ws, p->isbn);
 
-    cout << "Stocks:\t";
-    cin >> ws >> p->stocks;
+    p->stocks = Prompt::prompt("Stocks:\t");
 
-    cout << "Price:\t";
-    cin >> ws >> p->price;    
+    p->price = Prompt::prompt("Price:\t");    
 
     return p;
 }
@@ -110,9 +110,9 @@ void Book::search(void)
     p = find_entry(p, n);
     if(p != nullptr)
     {
-        cout << "=======\tBook Details\t======\n"
-             << "| " << p->title 
-
+        cout << "\t=======\tBook Details\t======\n"
+             << "\tTitle " << " Author\n"
+             << "\t" << p->title << "  " << p->author
              << endl; 
     }
     else
@@ -122,6 +122,8 @@ void Book::search(void)
 void Book::update(void)
 {
     int n;
+    double num;
+
     Archive *p = head; //aayusin ko to soon ok...
 
     cout << "Find Entry Number: ";
@@ -130,9 +132,9 @@ void Book::update(void)
     p = find_entry(p, n);
     if(p != NULL)
     {
-        cout << "Changing " << p->title << " data...\n";
-        entry_datas(p);    
-        head = p;
+       cout << "Changing " << p->title << " data...\n";
+       Menu::update_book(p->stocks, p->price); //updating the books informations
+       head = p;
     }
     else
         cout << "Entry doesn't exist in the archive\n";
@@ -141,7 +143,7 @@ void Book::update(void)
 void Book::show(void)
 {
     Archive *p;
-    static int line_len = 170;
+    static int line_len = 150;
     
     string bk_det[] = { "Code", "Title", "Author",
                         "ISBN", "Stocks", "Price"};
@@ -154,11 +156,11 @@ void Book::show(void)
     for(p = head; p != nullptr; p = p->next)
     {
              cout << " "  << p->number  << "\t\t|\t"
-             << p->title << "\t\t|\t "
-             << p->author << "\t|\t "
-             << p->isbn << "\t|\t"
-             << p->stocks << "\t\t|\t"
-             << p->price << "\t\t|\t\n";
+             << p->title << "\t\t\t "
+             << p->author << "\t\t "
+             << p->isbn << "\t\t"
+             << p->stocks << "\t\t\t"
+             << p->price << "\t\t\t\n";
     }
-    cout << left << std::setfill('=') << setw(line_len) << "\n";
 }
+

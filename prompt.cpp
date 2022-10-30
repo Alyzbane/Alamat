@@ -16,18 +16,20 @@ using std::runtime_error;
 namespace Prompt //start of prompt 
 {
 
-int prompt_cmd(const string &message)
+double prompt(const string &message)
     //taking the command option
 {
-    int n = 0;
+    double n = 0;
     cout << message;
 
     while(true)
     {
         if(cin >> n) return n;
         
-        cout << "Not a number\n";
+        cout << "\nNot a number\n";
         skip_to_int();
+        cout << message;
+
     }
 }
 bool legal(int c) 
@@ -42,16 +44,16 @@ bool legal(int c)
 //used by "alamat.cc" source file
 int get_cmd(void)
 {
-   int cmd = prompt_cmd("\n\n->"); //1st prompt_cmd
+   int cmd = prompt("\n\n->"); //1st prompt
 
     while(!legal(cmd))
     {
-       cerr << "Illegal command...\n";
+       cerr << "Illegal command...\n"; //fix ths since its showing this piece of shit
 
-       cmd = prompt_cmd("\n\n->");  //taking cmd again
+       cmd = prompt("\n\n->");  //taking cmd again
     }
 
-    return cmd;
+    return static_cast<int>(cmd);
 }
 
 //utility functions 

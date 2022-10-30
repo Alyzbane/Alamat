@@ -1,6 +1,6 @@
 #include <iostream>
 #include "prompt.h"
-#include "archive.hh"
+#include "archive.h"
 #include "menu.h"
 /* Bookshop inventory system Beta ver a.0
  * Date Created: 10/16/2022

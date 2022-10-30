@@ -3,13 +3,15 @@
 
 #include <string>
 
-using std::string;
+#define TITLE_LEN 100
+#define AUTHOR_LEN 50
+#define ISBN_LEN 14
 
 struct Archive
 {
-    string title;
-    string author;
-    string isbn;
+    std::string title;
+    std::string author;
+    std::string isbn;
     int number;
     int stocks;
     double price;
@@ -29,6 +31,7 @@ class Book
         //modifying
         void insertArch();         
         void update();
+
 };
 
 #endif
