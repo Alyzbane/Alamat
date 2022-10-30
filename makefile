@@ -1,11 +1,11 @@
 alamat:	alamat.o archive.o prompt.o menu.o
 	g++ -W -o alamat alamat.o archive.o prompt.o menu.o
 
-alamat.o:	alamat.cc
-	g++ -W -c  alamat.cc
+alamat.o:	alamat.cpp
+	g++ -W -c  alamat.cpp
 
-archive.o:	archive.cpp archive.hh 
-	g++ -W -c archive.cpp archive.hh
+archive.o:	archive.cpp archive.h 
+	g++ -W -c archive.cpp archive.h
 
 prompt.o:	prompt.cpp prompt.h
 	g++ -W -c prompt.cpp prompt.h

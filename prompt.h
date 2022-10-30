@@ -6,7 +6,7 @@
 namespace Prompt 
 {
 bool legal (int c);
-int prompt_cmd(const std::string &message);
+double prompt(const std::string &message);
 int get_cmd(void);
 void skip_to_int(void);
 void error (const std::string &message);
