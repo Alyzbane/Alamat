@@ -7,6 +7,7 @@
 #define AUTHOR_LEN 50
 #define ISBN_LEN 14
 
+
 struct Archive
 {
     std::string title;
@@ -25,6 +26,7 @@ class Book
     public:
         //non modifying 
         Book() {head = nullptr;}
+        ~Book();
         void search();
         void show();
 
@@ -33,5 +35,6 @@ class Book
         void update();
 
 };
+
 
 #endif

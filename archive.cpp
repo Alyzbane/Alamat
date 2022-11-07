@@ -16,13 +16,22 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::ws;
-using std::setw;
-using std::setfill;
-using std::left;
-using std::right;
 using std::getline;
 using std::string;
+using std::ostream;
 
+Book::~Book(void)
+{
+    while(head)
+    {
+        Archive *temp = head;
+        head = head->next;
+        delete temp;
+    }
+    head = nullptr;
+
+    cout << "book deleted...\n";
+}
 Archive *find_entry(Archive *head, const int &n)
 {
     Archive *p = head;
@@ -110,10 +119,8 @@ void Book::search(void)
     p = find_entry(p, n);
     if(p != nullptr)
     {
-        cout << "\t=======\tBook Details\t======\n"
-             << "\tTitle " << " Author\n"
-             << "\t" << p->title << "  " << p->author
-             << endl; 
+        cout << "\t-------\tBook Details\t------\n";
+        cout << p->title; 
     }
     else
         cout << "Entry doesn't exist in the archive\n"; 
@@ -142,25 +149,23 @@ void Book::update(void)
 
 void Book::show(void)
 {
+    if(head == nullptr)
+    {
+        std::cerr << "Book archive is empty...\n";
+        return;
+    }
+
     Archive *p;
-    static int line_len = 150;
-    
-    string bk_det[] = { "Code", "Title", "Author",
-                        "ISBN", "Stocks", "Price"};
-    for(size_t i = 0; i < sizeof(bk_det) / sizeof(bk_det[0]);
-            i++)
-        cout << " " << bk_det[i] << "\t\t\t\t";
-      
-    cout << "\n\n" << setfill('=') << setw(line_len) 
-         << "\n";
     for(p = head; p != nullptr; p = p->next)
     {
-             cout << " "  << p->number  << "\t\t|\t"
-             << p->title << "\t\t\t "
-             << p->author << "\t\t "
-             << p->isbn << "\t\t"
-             << p->stocks << "\t\t\t"
-             << p->price << "\t\t\t\n";
+        cout << "-> ["      << p->number << "]" 
+             << " Title:  "  << p->title << "\n "
+             << " \tAuthor: " << p->author << "\n "
+             << " \tISBN:   "   << p->isbn << "\n "
+             << " \tStocks: " << p->stocks << "\n "
+             << " \tPrice:  "  << p->price << "\n\n";
     }
 }
 
+//overload operators
+//printing book details

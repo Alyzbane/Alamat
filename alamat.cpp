@@ -20,7 +20,7 @@ int main(void)
     //cout << "Name: ";
     //getline(cin >> std::ws, nm);  //extract all trailing whitespace
 
-    //jesus christ 
+    //pointer to functions of admin and user interface
     void (*show_menus[])(Book& book, bool& state) = { Menu::show_admin, 
                                                       Menu::show_user};
 
