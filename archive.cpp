@@ -130,7 +130,16 @@ void Book::search(void)
     if(p != nullptr)
     {
         cout << "\t-------\tBook Details\t------\n";
-        cout << p->title; 
+        cout << "-> ["      << p->number << "]" 
+             << " Title:  "  << p->title << "\n "
+             << " \tAuthor: " << p->author << "\n ";
+        cout << " \tGenres: "; 
+     for(auto& w : p->genre) //for each  word found in the genre
+        cout << w << ". ";
+        cout << "\n \tISBN:   "   << p->isbn << "\n "
+             << " \tStocks: " << p->stocks << "\n "
+             << " \tPrice:  "  << p->price << "\n\n";
+ 
     }
     else
         cout << "Entry doesn't exist in the archive\n"; 
