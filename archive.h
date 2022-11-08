@@ -2,16 +2,14 @@
 #define ARKIBOS_H
 
 #include <string>
-
-#define TITLE_LEN 100
-#define AUTHOR_LEN 50
-#define ISBN_LEN 14
+#include <vector> 
 
 struct Archive
 {
     std::string title;
     std::string author;
     std::string isbn;
+    std::vector<std::string> genre;
     int number;
     int stocks;
     double price;
@@ -25,6 +23,7 @@ class Book
     public:
         //non modifying 
         Book() {head = nullptr;}
+        ~Book();
         void search();
         void show();
 
@@ -33,5 +32,6 @@ class Book
         void update();
 
 };
+
 
 #endif

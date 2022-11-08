@@ -1,13 +1,14 @@
 #ifndef MENU_H
 #define MENU_H
 
-/* using the Promp::get_cmd 
+/* using the Prompt::get_cmd 
  * para makita kung anong menu ang ibibigay
  * sa main(alamat.cc) source file
  * */
 
 #include "prompt.h"
 #include "archive.h"
+
 
 
 namespace Menu

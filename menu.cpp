@@ -1,17 +1,20 @@
 #include <iostream>
 #include <cstdlib>
+#include "login.h" //user defined header files (library)
 #include "menu.h"
 
 using std::cout;
 using std::endl;
+using std::cin;
+
 
 namespace Menu //start of menu namespace
 { 
 void main_menu(void)
+{
     //starting function
     //prompting the cmd privligies
-{
-    cout << "\n\n--Main Menu--\n" 
+    cout << "--Main Menu--\n" 
          << "\tChoose user type\n";
         cout << "\t=================================================\n"
                 "\t| 0\t - admin\t\t\t\t|\n"
@@ -58,57 +61,60 @@ void update_menu(void)
                 "\t=================================================\n";
 }
 
-//main menu function 
+//|---------------main menu function-----------------
 int show_main (bool& state)
 {
-    main_menu();
-    int cmen;
+        //0       1     2
+    enum {ADMIN, USER, EXIT};
+    int cmen; //pick menu
+    Admin alpha;
     while(state != false)
     {
+     main_menu();
      cmen = Prompt::get_cmd(); //will take the menu input
 
      switch(cmen) 
         //prompt option is legal
      {
-        case 0: 
+        case ADMIN:  //admin
             state = false; //set the state to return admin i/f
+            alpha.login();
             break;
-        case 1:
+        case USER:
             state = false; //set the state to return show i/f
             break;
-        case 2:
+        case EXIT:
             return -1;
         default:
             cout << "Not valid option\n";
-            main_menu();
             break;
      }
-     main_menu();
     }
     return cmen;
 }
+
+//|---------------------User Menu Options----------------|
+
 void show_user(Book& book, bool& state)
 {
-    user_menu();
-
     bool exit = false;
     int cmd;
 
     for(;!exit;)
     {
+        user_menu(); //show menu again
         cmd = Prompt::get_cmd(); 
         switch(cmd)
         {
             case 1:
-                cout << ">Babalik-na ko-sayo<\n";
                 exit = true; //temp set the exit sa true
                 state = true;
                 break; //going back to main i/f
             case 2:
-                book.search(); 
-                break;
+                book.search();  
+                break; 
             case 3:
-                book.show();
+                book.show(); //papakita lahat ng mga librong nakalagay
                 break;
             case 4:
                 cout << "Wala pang function\n";
@@ -121,21 +127,20 @@ void show_user(Book& book, bool& state)
                 user_menu();
                 break;
         }
-    user_menu();
     }
 }
+
 void show_admin(Book& book, bool& state)
 {
-    admin_menu();
     int cmd;
     bool exit = false;
     for(;!exit;)
     {
+        admin_menu(); //show menu again
         cmd = Prompt::get_cmd(); 
         switch(cmd)
         {
             case 1:
-                cout << ">Babalik-na ko-sayo<\n";
                 exit = true;
                 state = true; //going back to main i/f
                 break;
@@ -156,15 +161,15 @@ void show_admin(Book& book, bool& state)
                 admin_menu();
                 break;
         }
-     admin_menu();
     }
 }
+//|--------------Update Price & Stocks of Specified Book-----------
 void update_book (int& goods, double& cost)
 {
     int c;
-    update_menu();
     while(true)
-    {
+    {  
+        update_menu(); //show menu again
         c = Prompt::get_cmd();
         switch(c)
         {
@@ -184,7 +189,6 @@ void update_book (int& goods, double& cost)
                 break;
 
         }
-        update_menu();
     }
 }
 } //end of Menu namespace

@@ -1,28 +1,36 @@
 #include <iostream>
-#include <iomanip>
 #include <cstdlib>
+#include <sstream>
 #include "archive.h"
 #include "menu.h"  //use by updt_book function to display update prompts
 #include "prompt.h" //using the prompt(string) to take numbers
-
 
 /*
  * Created: 10/6/2022
  *
  * Class Functions mainly
- * for Inserting books in the archive*/
+ * for Inserting books in the archive
+ * */
 
 using std::cout;
 using std::cin;
 using std::endl;
 using std::ws;
-using std::setw;
-using std::setfill;
-using std::left;
-using std::right;
 using std::getline;
 using std::string;
+using std::ostream;
 
+Book::~Book(void)
+{
+    //iterating through the nodes and deleting it 1 by 1
+    while(head != nullptr)
+    {
+        Archive *temp = head;
+        head = head->next;
+        delete temp;
+    }
+    head = nullptr;
+}
 Archive *find_entry(Archive *head, const int &n)
 {
     Archive *p = head;
@@ -41,21 +49,31 @@ Archive *find_entry(Archive *head, const int &n)
         return nullptr; //number does not exist in archive list
 }
 
+/*inserting datas 
+ * dependendent ont prompt functions to take 
+ * numbers*/
 Archive *entry_datas(Archive *node)
 {
     Archive *p = node;
+    string s; //taking the genre
 
     cout << "Title:\t";
-    std::getline(cin >> ws, p->title);
+    getline(cin >> ws, p->title);
 
     cout << "Author:\t";
-    std::getline(cin >> ws, p->author);
+    getline(cin >> ws, p->author);
+
+    cout << "\nEnter in delimited by space eg. action drama...\n";
+    cout << "Genre:\t";
+    getline(cin, s);
+    std::stringstream ss(s); //break the words
+    for(string word; ss >> word;) 
+        p->genre.push_back(word); //vector handles the words
 
     cout << "ISBN:\t";
-    std::getline(cin >> ws, p->isbn);
+    getline(cin >> ws, p->isbn);
 
     p->stocks = Prompt::prompt("Stocks:\t");
-
     p->price = Prompt::prompt("Price:\t");    
 
     return p;
@@ -104,16 +122,15 @@ void Book::search(void)
 {
     int n;
     Archive *p = head;
+
     cout << "Find Entry Number: ";
     cin >> n;
 
     p = find_entry(p, n);
     if(p != nullptr)
     {
-        cout << "\t=======\tBook Details\t======\n"
-             << "\tTitle " << " Author\n"
-             << "\t" << p->title << "  " << p->author
-             << endl; 
+        cout << "\t-------\tBook Details\t------\n";
+        cout << p->title; 
     }
     else
         cout << "Entry doesn't exist in the archive\n"; 
@@ -142,25 +159,25 @@ void Book::update(void)
 
 void Book::show(void)
 {
-    Archive *p;
-    static int line_len = 150;
+    if(head == nullptr)
+    {
+        std::cerr << "Book archive is empty...\n";
+        return;
+    }
     
-    string bk_det[] = { "Code", "Title", "Author",
-                        "ISBN", "Stocks", "Price"};
-    for(size_t i = 0; i < sizeof(bk_det) / sizeof(bk_det[0]);
-            i++)
-        cout << " " << bk_det[i] << "\t\t\t\t";
-      
-    cout << "\n\n" << setfill('=') << setw(line_len) 
-         << "\n";
+    //printing all books in the archives
+    Archive *p;
+    cout << "Books:\n";
     for(p = head; p != nullptr; p = p->next)
     {
-             cout << " "  << p->number  << "\t\t|\t"
-             << p->title << "\t\t\t "
-             << p->author << "\t\t "
-             << p->isbn << "\t\t"
-             << p->stocks << "\t\t\t"
-             << p->price << "\t\t\t\n";
+        cout << "-> ["      << p->number << "]" 
+             << " Title:  "  << p->title << "\n "
+             << " \tAuthor: " << p->author << "\n ";
+        cout << " \tGenres: "; 
+     for(auto& w : p->genre) //for each  word found in the genre
+        cout << w << ". ";
+        cout << "\n \tISBN:   "   << p->isbn << "\n "
+             << " \tStocks: " << p->stocks << "\n "
+             << " \tPrice:  "  << p->price << "\n\n";
     }
 }
-

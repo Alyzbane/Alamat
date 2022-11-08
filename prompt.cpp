@@ -27,9 +27,8 @@ double prompt(const string &message)
         if(cin >> n) return n;
         
         cout << "\nNot a number\n";
-        skip_to_int();
+        skip_to_int(); //input is not a number
         cout << message;
-
     }
 }
 bool legal(int c) 
@@ -38,10 +37,11 @@ bool legal(int c)
     //used in getcmd
     return ((c == 0) || (c == 1) || (c == 2) ||
             (c == 3) || (c == 4) || (c == 5) ||
-            (c == 6));
+            (c == 6) || (c == 7) || (c == 8) ||
+            (c == 9));
 }
 
-//used by "alamat.cc" source file
+//used by "alamat.cpp" source file
 int get_cmd(void)
 {
    int cmd = prompt("\n\n->"); //1st prompt

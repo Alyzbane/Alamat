@@ -2,6 +2,7 @@
 #include "prompt.h"
 #include "archive.h"
 #include "menu.h"
+
 /* Bookshop inventory system Beta ver a.0
  * Date Created: 10/16/2022
  */
@@ -17,10 +18,7 @@ int main(void)
     int opt; //menu interface to be shown
     string nm;
 
-    //cout << "Name: ";
-    //getline(cin >> std::ws, nm);  //extract all trailing whitespace
-
-    //jesus christ 
+    //pointer to functions of admin and user interface
     void (*show_menus[])(Book& book, bool& state) = { Menu::show_admin, 
                                                       Menu::show_user};
 
