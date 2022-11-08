@@ -1,5 +1,5 @@
-alamat:	alamat.o archive.o prompt.o menu.o
-	g++ -W -o alamat alamat.o archive.o prompt.o menu.o
+alamat:	alamat.o archive.o prompt.o menu.o login.o
+	g++ -W -o alamat alamat.o archive.o prompt.o menu.o login.o
 
 alamat.o:	alamat.cpp
 	g++ -W -c  alamat.cpp
@@ -12,3 +12,6 @@ prompt.o:	prompt.cpp prompt.h
 
 menu.o:	menu.cpp menu.h
 	g++ -W -c menu.cpp menu.h
+
+login.o:	login.cpp login.h
+	g++ -W -static-libstdc++ -c login.cpp login.h

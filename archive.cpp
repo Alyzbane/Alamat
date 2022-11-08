@@ -22,6 +22,7 @@ using std::ostream;
 
 Book::~Book(void)
 {
+	//deleting all entries
     while(head)
     {
         Archive *temp = head;
@@ -29,8 +30,6 @@ Book::~Book(void)
         delete temp;
     }
     head = nullptr;
-
-    cout << "book deleted...\n";
 }
 Archive *find_entry(Archive *head, const int &n)
 {
