@@ -23,10 +23,10 @@ Kulang pa dito ay: <br />
     > formatted using the buying()
  
 Aayusin lang muna sa version na ito ay:
- 1. mga class objects, yung sa main features eg. insert, search...
-    1.1 hihiwalay/organize nalang yung mga helper functions
- 2. exception handling 
-    i.e. mga int at double error inputs pag may bagong enter na data
- 3. struct or vector class sa paghahandle ng mga catalog
+ 1. <s> mga class objects, yung sa main features eg. insert, search...
+    1.1 hihiwalay/organize nalang yung mga helper functions </s>  
+ 2. <s> exception handling 
+    i.e. mga int at double error inputs pag may bagong enter na data </s>  
+ 3. <s> struct or vector class sa paghahandle ng mga catalog </s> napili ay pointer to dynamically allocated arrays
  4. Adding discount to the books </br>
  <strong>5. %1. messy code functions, lipat sa class or something</strong>
