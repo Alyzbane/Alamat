@@ -2,29 +2,22 @@
 #define ARKIBOS_H
 
 #include <string>
+#include <vector> 
+#include "entry.h" //using the entry_datas() at insertArch(...)
 
-#define TITLE_LEN 100
-#define AUTHOR_LEN 50
-#define ISBN_LEN 14
-
-struct Archive
-{
-    std::string title;
-    std::string author;
-    std::string isbn;
-    int number;
-    int stocks;
-    double price;
-    struct Archive *next;
-};
-
-class Book 
+class Archive 
 {
     private:
-        Archive *head;
+        Book *head;
+        int capacity;
+        int cur_size;
+        int find_entry(int &n) const;
+        void grow(void);
+
     public:
         //non modifying 
-        Book() {head = nullptr;}
+        Archive();
+        ~Archive();
         void search();
         void show();
 

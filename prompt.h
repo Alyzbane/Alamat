@@ -8,7 +8,7 @@ namespace Prompt
 bool legal (int c);
 double prompt(const std::string &message);
 int get_cmd(void);
-void skip_to_int(void);
+void skip_to_int(const std::string &mensage);
 void error (const std::string &message);
 }
 #endif

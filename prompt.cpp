@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include "prompt.h"
 /* The "prompt.h" handle every user calls to the interface
  * functions from "menu.h"
@@ -25,11 +24,8 @@ double prompt(const string &message)
     while(true)
     {
         if(cin >> n) return n;
-        
-        cout << "\nNot a number\n";
-        skip_to_int();
-        cout << message;
 
+        skip_to_int(message); //input is not a number
     }
 }
 bool legal(int c) 
@@ -38,10 +34,11 @@ bool legal(int c)
     //used in getcmd
     return ((c == 0) || (c == 1) || (c == 2) ||
             (c == 3) || (c == 4) || (c == 5) ||
-            (c == 6));
+            (c == 6) || (c == 7) || (c == 8) ||
+            (c == 9));
 }
 
-//used by "alamat.cc" source file
+//used by "alamat.cpp" source file
 int get_cmd(void)
 {
    int cmd = prompt("\n\n->"); //1st prompt
@@ -64,10 +61,10 @@ void error (const string &message)
 }
 
 //checking if the input is true to its datatype
-void skip_to_int(void)
+void skip_to_int(const string &mensahe)
 {
     if(cin.fail()) //input is not integer
-        cin.clear(); //remove all inputs in the buffer
+        cin.clear(); //remove all inputs in the buffer & errors state
     
     for(unsigned char ch; cin >>ch;)
     {
@@ -76,6 +73,8 @@ void skip_to_int(void)
             cin.unget(); //give back the int
             return; //use it
         }
+        cout << "Input " << ch << " is not a number\n";
+        cout << mensahe;
     }
     error("No input\n");
 }

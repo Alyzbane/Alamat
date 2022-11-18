@@ -1,166 +1,140 @@
 #include <iostream>
-#include <iomanip>
 #include <cstdlib>
+#include <sstream>
 #include "archive.h"
 #include "menu.h"  //use by updt_book function to display update prompts
 #include "prompt.h" //using the prompt(string) to take numbers
-
 
 /*
  * Created: 10/6/2022
  *
  * Class Functions mainly
- * for Inserting books in the archive*/
+ * for Inserting books in the archive
+ * */
 
 using std::cout;
 using std::cin;
 using std::endl;
 using std::ws;
-using std::setw;
-using std::setfill;
-using std::left;
-using std::right;
 using std::getline;
 using std::string;
+using std::ostream;
 
-Archive *find_entry(Archive *head, const int &n)
+//|------constructor-------
+Archive::Archive(void)
 {
-    Archive *p = head;
-
-    cout << "Finding...\n" ;
-    for(;
-        p != nullptr && n > p->number;
-        p = p->next)
-        ;
-
-    if (p != nullptr && n == p->number)
-    {
-       return p; //number ay nakita na
-    }
-    else
-        return nullptr; //number does not exist in archive list
+    capacity = 5;
+    cur_size = 0;
+    head = new Book[capacity];
 }
 
-Archive *entry_datas(Archive *node)
+//|------destructor-------
+Archive::~Archive(void)
 {
-    Archive *p = node;
+    delete [] head;
+}
+int Archive::find_entry(int &n) const 
+{
 
-    cout << "Title:\t";
-    std::getline(cin >> ws, p->title);
+    for(int i = 0; i < cur_size; i++)
+        if(head[i].get_no() == n)
+            return i;  //retrning the index of n
 
-    cout << "Author:\t";
-    std::getline(cin >> ws, p->author);
-
-    cout << "ISBN:\t";
-    std::getline(cin >> ws, p->isbn);
-
-    p->stocks = Prompt::prompt("Stocks:\t");
-
-    p->price = Prompt::prompt("Price:\t");    
-
-    return p;
+    return -1; //number does not exist in archive list
 }
 
-//inserting entry 
-void Book::insertArch(void)
+//|----------inserting new book in the archive-----------------
+void Archive::insertArch(void)
 {
-    Archive *cur, *prev;
-    Archive *new_node = new Archive;
-
-    if(new_node == NULL)
-    {
-        std::cerr << "Memory full: ";
-        return;
-    }
-
-    cout << "Entry number: ";
-    cin >> new_node->number;
     
-    //will sort the entry number from low to high
-    for(cur = head, prev = nullptr;
-        cur != nullptr && new_node->number > cur->number;
-        prev = cur, cur = cur->next)
-        ;
+    int entry_n; 
     
-    if(cur != nullptr && new_node->number == cur->number)
+    if(cur_size == capacity) //if archive full, grow it 
+        grow();
+    
+    cout << "\t\tNew Book\n";
+
+    cout <<"Entry number: ";
+    cin >> ws >> entry_n;
+    cin.ignore(); //clearing the newline left by enter 
+
+    //existing entry number
+    if(find_entry(entry_n) >= 0)
     {
         cout << "Entry number already exist\n";
-        delete(new_node);
         return;
     }
     
-    new_node = entry_datas(new_node);
-    new_node->next = cur; 
-    if(prev == nullptr)
-        head = new_node; //entry will be insert
-                         //in the lowest number
-    else
-        prev->next = new_node; //insert the entry num
-                               //after the low num
+    //load new entry in archive
+    head[cur_size++].insert(entry_n);
 }
 
-//searching through a parameter archive
-void Book::search(void)
+//|---------searching through archive using entry no------
+void Archive::search(void)
 {
-    int n;
-    Archive *p = head;
-    cout << "Find Entry Number: ";
-    cin >> n;
-
-    p = find_entry(p, n);
-    if(p != nullptr)
-    {
-        cout << "\t=======\tBook Details\t======\n"
-             << "\tTitle " << " Author\n"
-             << "\t" << p->title << "  " << p->author
-             << endl; 
-    }
-    else
-        cout << "Entry doesn't exist in the archive\n"; 
-}
-
-void Book::update(void)
-{
-    int n;
-    double num;
-
-    Archive *p = head; //aayusin ko to soon ok...
-
-    cout << "Find Entry Number: ";
-    cin >> n;
-
-    p = find_entry(p, n);
-    if(p != NULL)
-    {
-       cout << "Changing " << p->title << " data...\n";
-       Menu::update_book(p->stocks, p->price); //updating the books informations
-       head = p;
-    }
-    else
-        cout << "Entry doesn't exist in the archive\n";
-}
-
-void Book::show(void)
-{
-    Archive *p;
-    static int line_len = 150;
+    int n, exist;
     
-    string bk_det[] = { "Code", "Title", "Author",
-                        "ISBN", "Stocks", "Price"};
-    for(size_t i = 0; i < sizeof(bk_det) / sizeof(bk_det[0]);
-            i++)
-        cout << " " << bk_det[i] << "\t\t\t\t";
-      
-    cout << "\n\n" << setfill('=') << setw(line_len) 
-         << "\n";
-    for(p = head; p != nullptr; p = p->next)
+    cout << "\t\tSearching a book\n"
+            "Find Entry Number: ";
+    cin >> ws >> n;
+
+    exist = find_entry(n); 
+    if(exist >= 0)
     {
-             cout << " "  << p->number  << "\t\t|\t"
-             << p->title << "\t\t\t "
-             << p->author << "\t\t "
-             << p->isbn << "\t\t"
-             << p->stocks << "\t\t\t"
-             << p->price << "\t\t\t\n";
+        cout << "\t-------\tBook Details\t------\n";
+        cout << head[exist];
+    }
+    else
+    {
+        cout << "Entry doesn't exist in the archive\n"; 
     }
 }
 
+
+/*  doubling the size of archive
+    create new array of archive
+    old head will refer to that new array */
+void Archive::grow(void)
+{
+    capacity = cur_size + 5;              //determine the new size 
+    Book *new_head = new Book[capacity];    //allocate 
+
+    for(int i = 0; i < cur_size; i++)
+        new_head[i] = head[i];
+
+    delete [] head;    //remove old array
+    head = new_head;      //point to new array
+}
+
+void Archive::update(void)
+{
+    int n, exist;
+
+    cout << "\t\tUpdate Book\n";
+    cout << "Entry number: ";
+    cin >> ws >> n;
+
+    exist = find_entry(n);
+    if(exist >= 0)
+    {
+       cout << "Changing " << head[exist].get_title() << " data...\n";
+       head[exist].revise();
+    }
+    else
+    {
+        cout << "Entry doesn't exist in the archive\n";
+    }
+}
+void Archive::show(void)
+{
+    if(cur_size == 0)
+    {
+        std::cerr << "Archive archive is empty...\n";
+        return;
+    }
+    
+    //printing all books in the archives
+    cout << "Archives:\n";
+    for(int i = 0; i < cur_size; i++)
+         cout << head[i];
+}
