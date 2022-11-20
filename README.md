@@ -14,7 +14,7 @@ Kulang pa dito ay: <br />
     3.1 show recent bought book
     3.2 show history of transactions
     
- 4. buying()
+ 4. buying()<br/>
     4.1 Discount / Promo / Voucher
     4.2 using the Func::seach() to sort the query
     
