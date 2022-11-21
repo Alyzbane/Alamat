@@ -17,6 +17,23 @@ Book::Book(void)
     stocks = 0;
     price = 0.00;
 }
+//|------Ctor user initialized arguments----------------
+Book::Book(int n, int s, double p,std::string au,
+             std::string tt, std::string ibn,
+             std::vector<std::string> gen)
+    : number(n), stocks(s), price(p),           //initialize the values
+      author(au), title(tt), isbn(ibn), genres(gen) 
+{
+}
+
+//|-------Used for 0 index of array----------
+void Book::create(int n, int s, double p,std::string au,
+             std::string tt, std::string ibn,
+             std::vector<std::string> gen)
+{
+    number = n, stocks = s, price = p;           //initialize the values
+    author = au, title = tt, isbn = ibn, genres = gen;
+}
 
 //|--------Operator Overloads--------------
 ostream& operator <<(ostream& ost, const Book& b)
@@ -72,6 +89,7 @@ void Book::revise(void)
     Menu::update_book(stocks, price);
 }
 
+//utility functions
 //mainly use for tax calculations
 double Book::get_price(void)
 {

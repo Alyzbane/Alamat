@@ -10,5 +10,6 @@ double prompt(const std::string &message);
 int get_cmd(void);
 void skip_to_int(const std::string &mensage);
 void error (const std::string &message);
+bool natural_num(double& nn);
 }
 #endif

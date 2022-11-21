@@ -2,7 +2,6 @@
 #define ARKIBOS_H
 
 #include <string>
-#include <vector> 
 #include "entry.h" //using the entry_datas() at insertArch(...)
 
 class Archive 
@@ -13,12 +12,13 @@ class Archive
         int cur_size;
         int find_entry(int &n) const;
         void grow(void);
+        int exist(int& n);
 
     public:
         //non modifying 
         Archive();
         ~Archive();
-        void search();
+        Book search();
         void show();
 
         //modifying

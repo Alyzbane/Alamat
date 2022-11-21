@@ -1,15 +1,20 @@
-#include <iostream>
-#include <cstdlib>
-#include "login.h" //user defined header files (library)
 #include "menu.h"
+#include "login.h" //show_admin(...) - prompt admin for username and passwowrd
+#include "user.h"  //show_user(...)  - prompt user to buy books, purchase history, etc.
+#include "screen.h" //ClearScreen - using ansi codes
+#include <cstdlib>
 
 using std::cout;
 using std::endl;
+using std::string;
 using std::cin;
+using std::vector;
 
 
 namespace Menu //start of menu namespace
 { 
+
+//|---------------Main Interface--------------
 void main_menu(void)
 {
     //starting function
@@ -23,6 +28,8 @@ void main_menu(void)
                 "\t================================================="
                 << endl;
 }
+
+//|------------Admin Interface-----------------
 void admin_menu(void)
 {
     cout << "\n\n--Admin--\n";
@@ -36,20 +43,24 @@ void admin_menu(void)
                 "\t================================================="
                 << endl;
 }
+
+//|--------------User Interface--------------------
 void user_menu(void)
 {
     cout << "\n\n--user--\n";
       cout << "\nwhat would you like to do? " << endl;
         cout << "\t=================================================\n"
                 "\t| 1\t - search a book\t\t\t|\n"
-                "\t| 1\t - buy books\t\t\t\t|\n"
-                "\t| 2\t - show all of the books in archive\t|\n"
-                "\t| 3\t - show recent bought books\t\t|\n"
-                "\t| 4\t - show history of transactions\t\t|\n"
+                "\t| 2\t - buy books\t\t\t\t|\n"
+                "\t| 3\t - show all of the books in archive\t|\n"
+                "\t| 4\t - show recent bought books\t\t|\n"
+                "\t| 5\t - show history of transactions\t\t|\n"
                 "\t| 0\t - close options\t\t\t|\n"
                 "\t================================================="
                 << endl;
 }
+
+//|--------Exit interface of every menu except for main--------------
 void exit_menu(void)
 {
      cout << "\n\n--Exit--\n";
@@ -59,7 +70,8 @@ void exit_menu(void)
                "\t| 2\t - close the program\t\t\t|\n"
                "\t=================================================\n";
 };
-//used for archive.cpp updt_book(...) function
+
+//|-----------used for archive.cpp updt_book(...) function----------------
 void update_menu(void)
 {
     cout << "\n\n--Updating...--\n";
@@ -71,13 +83,26 @@ void update_menu(void)
                 "\t 0\t - back\n"
                 "\t=================================================\n";
 }
-//|--------------dummy function------------------
-void show_dummy(Archive& book, bool& state, bool& close)
+
+//|-------------User Interface---------------------------
+void buy_menu()
 {
-    //go back again to show the user options i/f
-    state = true;
+    cout << "\n\n--Buying--\n";
+      cout << "\nBuy again?\n" << endl;
+        cout << "\t=================================================\n"
+                "\t 1\t - YES\n"
+                "\t 2\t - NO\n"
+                "\t=================================================\n";
+
 }
-//|---------------main menu function-----------------
+//|--------------dummy function------------------
+void show_dummy(Archive& book, User& buyer, bool& state, bool& close)
+{
+    //go back again to show the main menu
+    state = true;
+    ClearScreen();
+}
+//|----------------------MAIN MENU INTERFACE-------------------------
 int show_main (bool& state, bool& close)
 {
     enum {EXIT, ADMIN, USER}; 
@@ -88,6 +113,8 @@ int show_main (bool& state, bool& close)
         return -1; 
 
     Admin alpha;
+    ClearScreen();
+
     while(state != false)
     {
      main_menu();
@@ -109,63 +136,79 @@ int show_main (bool& state, bool& close)
             cout << "Not valid option\n";
             break;
      }
+     press_key();
+     ClearScreen();
     }
     return cmen;
 }
 
-//|---------------------User Menu Options----------------|
-
-void show_user(Archive& book, bool& state, bool& close)
+//|---------------------USER INTERFACE-----------------------
+void show_user(Archive& book, User& buyer, bool& state, bool& close)
 {
-    enum{EXIT, BUY, SEARCH, SHOW, RECENT, HISTORY};
+    enum{EXIT,SEARCH, BUY, SHOW, RECENT, HISTORY};
     bool exit = false;
     int cmd;
+    Book recent;
+    vector<Book> srch_history;
+    buyer.wallet();                 //ask user for how much cash do they have
 
-    for(;!exit;)
+    ClearScreen();
+    while(!exit)
     {
         user_menu(); //show menu again
         cmd = Prompt::get_cmd(); 
         switch(cmd)
         {
-            case BUY:
-                break;
             case SEARCH:
-                book.search();  
-                break; 
+               recent = book.search();  
+               srch_history.push_back({recent});
+               Print(recent);
+               break;
+            case BUY:
+               buyer.find(book);
+               break; 
             case SHOW:
-                book.show(); //papakita lahat ng mga librong nakalagay
-                break;
+               book.show(); //papakita lahat ng mga librong nakalagay
+               break;
             case RECENT:
-                cout << "Wala pang function\n";
-                break;
+               buyer.recent();
+               break;
             case HISTORY:
-                cout << "Missing Function\n";
-                break;
+               buyer.history();
+               break;
             case EXIT:
-                show_exit(state, close);
-                exit = true; //temp set the exit sa true
-                break; //going back to main i/f
+               show_exit(state, close);
+               exit = true; //temp set the exit sa true
+               break; //going back to main menu 
             default:
-                cout << "Illegal command\n";
-                user_menu();
-                break;
+               cout << "Illegal command\n";
+               user_menu();
+               break;
         }
+        press_key();
+        ClearScreen();
     }
 }
 
-void show_admin(Archive& book, bool& state, bool& close)
+
+//|---------------------ADMIN INTERFACE--------------------------
+void show_admin(Archive& book, User& buyer, bool& state, bool& close)
 {
     enum{EXIT, SEARCH, INSERT, UPDATE, SHOW};
     int cmd;
     bool exit = false;
-    for(;!exit;)
+    Book recent;
+    ClearScreen();
+
+    while(!exit)
     {
         admin_menu(); //show menu again
         cmd = Prompt::get_cmd(); 
         switch(cmd)
         {
             case SEARCH:
-                book.search(); 
+                recent = book.search(); 
+                Print(recent); //will check if the return search is valid
                 break;
             case INSERT:
                 book.insertArch();
@@ -177,7 +220,7 @@ void show_admin(Archive& book, bool& state, bool& close)
                 book.show();
                 break;
             case EXIT:
-                show_exit(state, close); //going back to main i/f
+                show_exit(state, close); //going back to main menu 
                 exit = true;
                break;
             default:
@@ -185,6 +228,9 @@ void show_admin(Archive& book, bool& state, bool& close)
                 admin_menu();
                 break;
         }
+        press_key();
+        ClearScreen();
+
     }
 }
 //|--------------Update Price & Stocks of Specified Archive-----------
@@ -217,7 +263,10 @@ void update_book (int& goods, double& cost)
         }
     }
 }
-//|---------------------EXIT-----------------
+
+
+//utility functions
+//|---------------------Program Exit Options-----------------
 void show_exit(bool& state, bool& close)
 {
    enum {BACK = 1, EXIT};
@@ -240,5 +289,62 @@ void show_exit(bool& state, bool& close)
                 break;
         }
    }
+}
+
+//|-------------------User Buying Interface------------------
+bool ask_opt(void (*menus) (void), const string& msg)
+{
+    bool ans = false; 
+    bool exit = false;
+    int cmd;
+
+    cout << msg << endl;
+    enum{YES = 1, NO};
+    
+    while(!exit)
+    {
+        menus();
+        cmd = Prompt::prompt("--> ");
+        switch(cmd)
+        {
+         case YES:
+             ans =  true;
+             exit = true;
+             break;
+         case NO:
+             ans = false;
+             exit = true;
+             break;
+         default:
+             cout << "Illegal command " << cmd;
+             break;
+        }
+    }
+
+    return ans;
+}
+
+//Showing the returned search entry book
+bool Print(const Book& srch)
+{
+    if((srch.get_no()) == 0)
+    {
+     cout << "Archive is empty...\n\n";
+     return false;
+    }
+    else
+    {
+     cout << srch;
+     return true;
+    }
+}
+
+void press_key(void)
+{
+    cin.ignore();
+    cout << "\nPress the Enter key to continue...";
+    cin.get();
+
+    return;
 }
 } //end of Menu namespace

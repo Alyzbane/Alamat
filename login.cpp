@@ -34,7 +34,7 @@ void Admin::login(void)
  */
 {
     cin.clear(); //clear the stream, so buffer will be in good state
-    cin.ignore(); //remove any input characters in stream 
+    cin.ignore(); //ignore any input characters in stream 
 
     cout << "\t==============================\n";
     cout << "\tAdmin: ";

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>    //calculating total in natural_num(double&) function
 #include "prompt.h"
 /* The "prompt.h" handle every user calls to the interface
  * functions from "menu.h"
@@ -11,6 +12,8 @@ using std::cin;
 using std::cerr;
 using std::endl;
 using std::runtime_error;
+using std::isnormal;
+using std::signbit;
 
 namespace Prompt //start of prompt 
 {
@@ -79,4 +82,12 @@ void skip_to_int(const string &mensahe)
     error("No input\n");
 }
 
+//checks wether the arg num is valid and does exist in real world
+bool natural_num(double& nn)
+{
+     if((isnormal(nn) == true) && (signbit(nn) == true))
+         return false; //
+
+    return true;
+}
 } //end of prompt

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdexcept>
 #include "prompt.h"
 #include "archive.h"
 #include "menu.h"
@@ -10,17 +11,19 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
+using std::cerr;
 
 int main(void)
 {
-    Archive book; //declaring the link list head
-    bool state = true; //user going back to the main menu interface
+    Archive book; 
+    User buyer;
+    bool state = true;  //user going back to the main menu interface
     bool close = false;
-    int opt; //menu interface to be shown
+    int opt;            //menu interface to be shown
     string nm;
 
     //pointer to functions of admin and user interface
-    void (*show_menus[])(Archive& book, 
+    void (*show_menus[])(Archive& book, User& buyer, 
           bool& state, bool& close) = { Menu::show_dummy,
                                         Menu::show_admin, 
                                         Menu::show_user};
@@ -34,11 +37,10 @@ int main(void)
     while(opt != -1)
     { 
         if (state == false) //changed in first call of  show_main
-           (*show_menus[opt])(book, state, close);
-        else
-         //ask in main i/f again for o
+           (*show_menus[opt])(book, buyer, state, close);
+        else                //ask in main i/f again for cmd
            opt = Menu::show_main(state, close); 
     }
-    
+   
         return 0;
 }
