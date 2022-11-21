@@ -11,8 +11,8 @@ Kulang pa dito ay: <br />
        - title
        
  3. user()
-    3.1 show recent bought book
-    3.2 show history of transactions 
+  <s>    3.1 show recent bought book
+    3.2 show history of transactions </s>  
     
  4. buying()<br/>
     4.1 Discount / Promo / Voucher 
