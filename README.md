@@ -12,15 +12,16 @@ Kulang pa dito ay: <br />
        
  3. user()
     3.1 show recent bought book
-    3.2 show history of transactions
+    3.2 show history of transactions 
     
  4. buying()<br/>
-    4.1 Discount / Promo / Voucher
-    4.2 using the Func::seach() to sort the query
+    4.1 Discount / Promo / Voucher 
+    <s> 4.2 using the Func::seach() to sort the query </s>  
+   <b> Transactions History will not be sorted</b>
     
  5. resibo()
     > redirect the information of picked book into a file
-    > formatted using the buying()
+ <s>    > formatted using the buying()  </s>  
  
 Aayusin lang muna sa version na ito ay:
  1. <s> mga class objects, yung sa main features eg. insert, search...
