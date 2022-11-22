@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sstream>
+#include <iomanip>
 #include "user.h"
 #include "prompt.h"
 #include "menu.h"
@@ -26,47 +27,64 @@ User::User()
 {
 }
 //prompt the user for their wealth 
-void User::wallet(void)
+bool User::wallet(void)
 {
     double m;
+    short int indent = 50,
+              extra_indt = 5;
 
-    cin.ignore();
+//    cin.ignore();
 
-    cout << "\t==============================\n";
-    cout << "\tUsername: ";
+    cout << setw(indent + extra_indt) << ' ' << 
+         setw(indent / extra_indt) <<
+        "==============================\n";
+    cout << setw(indent + extra_indt) << ' ' << 
+         setw(indent / extra_indt - 5) <<
+         "Username: ";
         getline(cin, name); 
-    cout << "\t==============================\n";
+
+    cout << setw(indent + extra_indt) << ' ' << 
+         setw(indent / extra_indt - 5) <<
+        "==============================\n";
+ 
    
-   
-    m = Prompt::prompt("\nHow much money do you have?");
+    m = Prompt::prompt("\nHow much money do you have: ");
+
 
     //not natural number
-    if(natural_num(m) == false)
+    if(m == 0 || (natural_num(m)) == false)
+    {
         cerr << "Money like this" << m << " doesn't exist.\n";
+        return false;
+    }
 
     cash = m; //assigning the cash
+    return true;
 }
 void User::find(Archive& arch)
 {
     Book item;
-    bool again, valid;
-    item = arch.search(); 
+    item = arch.search();  //this doesn't returned ref. to obj
+    bool again;
+    int load;
     if((Menu::Print(item)) == false)  
         return;                         //archive is empty
 
-    valid = buy(item);
+        //printing the book information
+    load = buy(item);
 
-    if(valid == false)
+    if(load == 0)
     {
         return; //cash is not enough
     }
-    else
-    {
-      again = Menu::ask_opt(Menu::buy_menu, "\n\t\tWould you like to buy again?");
-      if(again == true)   //will recursively calls to buy a book
-          find(arch); 
-    }
 
+    arch.change(item, load); //computing the remaining stocks
+    
+    again = Menu::ask_opt(Menu::buy_menu, "\n\t\tWould you like to buy again?");
+    if(again == true)   //will recursively calls to buy a book
+    {
+        find(arch); 
+    }
     return;
 }
 
@@ -76,8 +94,8 @@ bool User::buy(Book& entry)
     //store lahat ng bibilhin na libro
     int qty;
     double  total, wealth;
-    double tax = 100 /  entry.get_price();
     double price = entry.get_price();
+    constexpr double TAX = 0.12;
 
     cout << "Your cash: " << cash << endl;
 
@@ -95,23 +113,23 @@ bool User::buy(Book& entry)
              << "\t\tBalance: " << cash
              << "\n\t\tRemaining Amount: " << wealth << endl;
 
-        return false;
+        return 0;  //not enough cash
     }
 
     total = wealth;
     //TO DO: compute the payment with tax
     
     /******store the transactions********/
-    records.push_back({qty, price, wealth, tax, total, entry.get_title()});
+    records.push_back({qty, price, wealth, TAX, total, entry.get_title()});
     user[name] = records; //record the name of user
 
     cout << "\t\tBalance: " << cash
          << "\n\t\tRemaining Amount: " << wealth << endl;
-    //remaining cash
-    cash = wealth;
+
+    cash = wealth;         //remaining cash
 
     cout << "Thank you for buying!...\n";
-    return true;
+    return qty; // used for computing the archive stocks
 }
 
 //|--------------------- PRINT ALL OF THE RECORDED PURCHASES -----------------

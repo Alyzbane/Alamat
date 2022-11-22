@@ -175,3 +175,16 @@ int Archive::exist(int& n)
     return exist;
 }
 
+
+//changing the value of entry in archive
+void Archive::change(Book& ee, int& n)
+{
+    int exist, load = ee.get_no();
+
+    exist = find_entry(load);
+
+    while((head[exist].min_stocks(n)) != 2)   //reduced the stocks
+      cout << "Not enough " <<  head[exist].get_stocks() << " stocks\n";
+}
+
+

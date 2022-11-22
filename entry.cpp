@@ -1,10 +1,11 @@
 #include <sstream>
+#include <iomanip>
 #include "entry.h"
 #include "prompt.h"
 #include "menu.h"
 
-
 using namespace std;
+using Prompt::natural_num;
 
 //|----------Constructor--------------
 Book::Book(void)
@@ -48,9 +49,10 @@ ostream& operator <<(ostream& ost, const Book& b)
    //for each  word found in the genre
      for(auto& w : b.genres) ost << w << ". ";
 
-        ost << "\n \tISBN:   "   << b.isbn << "\n "
-             << " \tStocks: " << b.stocks << "\n "
-             << " \tPrice:  "  << b.price << "\n\n";
+        ost << "\n \tISBN:   "    << b.isbn << "\n "
+             << " \tStocks: "     << b.stocks << "\n " 
+             << fixed             << setprecision(2)
+             << " \tPrice:  "     << b.price << "\n\n";
 
         return ost;
 }
@@ -58,6 +60,7 @@ ostream& operator <<(ostream& ost, const Book& b)
 //|-------Member  Functions-----------
 void Book::insert(const int n)
 {
+    const double TAX = 0.12;
     string s; //taking the genres
 
     cout << "Title:\t";
@@ -81,16 +84,39 @@ void Book::insert(const int n)
     stocks = Prompt::prompt("Stocks:\t");
     price = Prompt::prompt("Price:\t");    
 
+    //tax calculation
+    //TO DO: fix error prone of price
+    price = (TAX * price) + price;
     number = n;
 }
 
+// args passed will be change by reference
 void Book::revise(void)
 {
     Menu::update_book(stocks, price);
 }
 
-//utility functions
-//mainly use for tax calculations
+// arg passed is by user found in computation function
+int Book::min_stocks(int& n)
+{
+    enum {OUT, MIN, SUCCESS};
+    if(stocks == 0)         //check the remaining stocks
+    {
+      cout << "\nOut of stocks...\n";
+      return OUT;
+    }
+    double dummy = stocks - n;            //compute stocks if valid
+    if(natural_num(dummy) == false)
+    {
+      cout << "\nInvalid amount of quantity...\n";
+      return MIN; //will be prompt again to insert valid n
+    }
+
+    stocks -= n;
+    return SUCCESS;
+}
+
+//****************** UTILITY FUNCTIONS *********************
 double Book::get_price(void)
 {
     return price;
@@ -107,4 +133,3 @@ string Book::get_title(void) const
 {
     return title;
 }
-

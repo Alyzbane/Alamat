@@ -33,7 +33,6 @@ void Admin::login(void)
  * reset and ask again. so INF loop ay maiwasan
  */
 {
-    cin.clear(); //clear the stream, so buffer will be in good state
     cin.ignore(); //ignore any input characters in stream 
 
     cout << "\t==============================\n";

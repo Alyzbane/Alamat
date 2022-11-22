@@ -24,6 +24,7 @@ class Archive
         //modifying
         void insertArch();         
         void update();
+        void change(Book& ee, int& n);
 
 };
 

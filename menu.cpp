@@ -124,11 +124,11 @@ int show_main (bool& state, bool& close)
         //prompt option is legal
      {
         case ADMIN:  //admin
-            state = false; //set the state to return admin i/f
+            state = false; //show admin i/f
             alpha.login();
             break;
         case USER:
-            state = false; //set the state to return show i/f
+            state = false; //show user i/f
             break;
         case EXIT:
             return -1;
@@ -150,7 +150,13 @@ void show_user(Archive& book, User& buyer, bool& state, bool& close)
     int cmd;
     Book recent;
     vector<Book> srch_history;
-    buyer.wallet();                 //ask user for how much cash do they have
+
+    if(buyer.wallet() == false)
+        //ask user for how much cash do they have
+    {
+        show_exit(state, close);
+        return;
+    }
 
     ClearScreen();
     while(!exit)
@@ -182,7 +188,6 @@ void show_user(Archive& book, User& buyer, bool& state, bool& close)
                break; //going back to main menu 
             default:
                cout << "Illegal command\n";
-               user_menu();
                break;
         }
         press_key();
@@ -225,7 +230,6 @@ void show_admin(Archive& book, User& buyer, bool& state, bool& close)
                break;
             default:
                 cout << "Illegal command\n";
-                admin_menu();
                 break;
         }
         press_key();
@@ -342,7 +346,7 @@ bool Print(const Book& srch)
 void press_key(void)
 {
     cin.ignore();
-    cout << "\nPress the Enter key to continue...";
+    cout << "\nPress the enter key to continue...";
     cin.get();
 
     return;

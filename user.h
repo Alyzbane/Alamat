@@ -33,7 +33,7 @@ namespace Consumer { //start of consumer namespace
     public:
         //modifying functions
         User();
-        void wallet(void);
+        bool wallet(void);
         void find(Archive& arch);
 
         //non modifying functions

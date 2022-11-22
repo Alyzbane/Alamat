@@ -30,6 +30,7 @@ class Book
         void create(int n, int s, double p,std::string au,
              std::string tt, std::string ibn,
              std::vector<std::string> gen);
+        int min_stocks(int& n);
 
 
         //non-modifying funcs
