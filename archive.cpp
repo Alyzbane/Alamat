@@ -1,4 +1,3 @@
-#include <iostream>
 #include <cstdlib>
 #include <new>     //using (nothrow) elements of ctor 
 #include "archive.h"
@@ -23,30 +22,31 @@ using std::ws;
 using std::getline;
 using std::string;
 using std::ostream;
+using std::ofstream;
+using std::vector;
+
+using namespace Tome;
 
 //|------constructor-------
 Archive::Archive(void)
 {
-    capacity = 5;
-    cur_size = 0;
-    head = new (std::nothrow) Book[capacity];
+     info = Book (0, 0, 0.0, 
+          (string)"", (string)"", (string)"", vector<string>{(string)" "});
+     head.push_back(info); 
 
-    //head[0] - default values to show in case of errors
-    head[cur_size++].create(0,0,0, 
-                      (string)"", (string)"",
-                      (string)"",
-                      std::vector<string>{static_cast<string>("")});
+     //intializing the data
+     fpath = "archive.dat";
 }
 
 //|------destructor-------
 Archive::~Archive(void)
 {
-    delete [] head;
 }
+
 int Archive::find_entry(int &n) const
 {
 
-    for(int i = 0; i < cur_size; i++)
+    for(size_t i = 0;  i < head.size(); ++i)
     {
         if(head[i].get_no() == n)
             return i;  //retrning the index of n
@@ -58,12 +58,8 @@ int Archive::find_entry(int &n) const
 //|----------inserting new book in the archive-----------------
 void Archive::insertArch(void)
 {
-    
     int entry_n; 
-    
-    if(cur_size == capacity) //if archive full, grow it 
-        grow();
-    
+
     cout << "\t\tNew Book\n";
 
     cout <<"Entry number: ";
@@ -76,43 +72,38 @@ void Archive::insertArch(void)
         cout << "Entry number already exist\n";
         return;
     }
-    
+
+    info.insert(entry_n);
     //load new entry in archive
-    head[cur_size++].insert(entry_n);
+    head.push_back({info});
+
+    //load entry in file
+    ofstream arch {fpath, ofstream::app};
+    arch << head.back();
 }
 
 ///|---------searching through archive using entry no------
 Book Archive::search(void)
 {
     //return default book if nothing is inserted
-    if(cur_size == 1)
-       return head[0]; 
+    if(head.size() == 1)
+       return head.front(); 
 
     int n, ex;
     
     cout << "\t\tSearch a book\n";
     n = Prompt::prompt("Find Entry Number: ");
 
-    //will create a stack of recursive calls
+    //will create a stack of recursive calls until entry is found
     if((ex = find_entry(n)) == -1) 
         ex = exist(n);
+    if(ex == 0)
+    {
+        cout << "Archive is empty...\n";
+        return head[ex];
+    }
 
     return head[ex];
-}
-
-/*  doubling the size of archive
-    create new array of archive
-    old head will refer to that new array */
-void Archive::grow(void)
-{
-    capacity = cur_size + 5;              //determine the new size 
-    Book *new_head = new Book[capacity];    //allocate 
-
-    for(int i = 0; i < cur_size; i++)
-        new_head[i] = head[i];
-
-    delete [] head;    //remove old array
-    head = new_head;      //point to new array
 }
 
 //|----------Prompting Admin to Update (stocks,price) interface---------------
@@ -127,7 +118,9 @@ void Archive::update(void)
     exist = find_entry(n);  
     if(exist >= 1) //the entry is found 
     {
-       cout << "Changing " << head[exist].get_title() << " data...\n";
+       cout << "Changing book information...\n";
+       cout << head[exist]; 
+
        head[exist].revise();
     }
     else //exist = -1
@@ -141,7 +134,7 @@ void Archive::update(void)
 void Archive::show(void)
 {
     //0 index is the default empty book
-    if(cur_size == 1)
+    if(head.size() == 1)
     {
         cerr << "Archive is empty...\n";
         return;
@@ -149,7 +142,7 @@ void Archive::show(void)
     
     //printing all books in the archives
     cout << "Archives:\n";
-    for(int i = 1; i < cur_size; i++)
+    for(size_t i = 1; i < head.size(); ++i)
          cout << head[i];
 }
 
@@ -159,9 +152,9 @@ int Archive::exist(int& n)
     int exist = -1;
     int count = 0;
     while(exist == -1)
-     {
+    {
        if(count >= 7) 
-           cout << "\t\t--Enter 0 to return--\n\n";
+           cout << "\n\t\t--Enter 0 to return--\n\n";
 
        cerr << "\t\tEntry doesn't exist in the archive\n"; 
 
@@ -170,7 +163,7 @@ int Archive::exist(int& n)
 
        cin.ignore();
        count++;
-     }
+    }
 
     return exist;
 }
@@ -186,5 +179,3 @@ void Archive::change(Book& ee, int& n)
     while((head[exist].min_stocks(n)) != 2)   //reduced the stocks
       cout << "Not enough " <<  head[exist].get_stocks() << " stocks\n";
 }
-
-

@@ -16,6 +16,7 @@ namespace Consumer { //start of consumer namespace
     double tax;
     double total;
     std::string title;
+    std::string time; 
  };
 
  class User 
@@ -25,7 +26,7 @@ namespace Consumer { //start of consumer namespace
       std::vector<Receipt> records;
       std::string name;
       double cash;
-      bool buy(Book& entry);        //archive here to store values
+      bool buy(Tome::Book& entry);        //archive here to store values
       bool ismap_filled(const std::string& msg, std::unordered_map
                              <std::string, std::vector<Receipt> >::iterator& eu);
                        
@@ -45,6 +46,7 @@ namespace Consumer { //start of consumer namespace
 
 //overload operators
 std::ostream& operator <<(std::ostream& os, Receipt& rcpt);
+std::string time_stamp(void);
 
 
 } //end of Consumer namespace

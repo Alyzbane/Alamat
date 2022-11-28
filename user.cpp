@@ -1,23 +1,14 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <chrono>       //system_clock
+#include <ctime>        //time_t  used for timestamp
 #include "user.h"
 #include "prompt.h"
 #include "menu.h"
-    //TO DO:
-    //function 
-    //  calculate tax & total
- 
-
-    //ask name or assign incremented customer id
-    //ask how many qty
-    //ask cash
-    //if bought lessen the b.stocks--
-    //assign the  item.insert(qty, b.price,
-    //                        cash, tax, total, b.title)
-   
-   
+       
 using namespace std;
+using namespace Tome;
 using Prompt::natural_num;
 
 namespace Consumer { //start of Consumer 
@@ -33,11 +24,10 @@ bool User::wallet(void)
     short int indent = 50,
               extra_indt = 5;
 
-//    cin.ignore();
-
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt) <<
-        "==============================\n";
+        "====================================\n";
+
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt - 5) <<
          "Username: ";
@@ -45,10 +35,11 @@ bool User::wallet(void)
 
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt - 5) <<
-        "==============================\n";
+        "====================================\n";
  
-   
-    m = Prompt::prompt("\nHow much money do you have: ");
+    cout << setw(indent + extra_indt) << ' ' << 
+    setw(indent / extra_indt - 5);
+    m = Prompt::prompt("How much money do you have: ");
 
 
     //not natural number
@@ -67,10 +58,13 @@ void User::find(Archive& arch)
     item = arch.search();  //this doesn't returned ref. to obj
     bool again;
     int load;
-    if((Menu::Print(item)) == false)  
-        return;                         //archive is empty
 
-        //printing the book information
+    if(item.get_no() == 0)
+        return;
+
+    cout << item;
+
+    //printing the book information
     load = buy(item);
 
     if(load == 0)
@@ -95,7 +89,7 @@ bool User::buy(Book& entry)
     int qty;
     double  total, wealth;
     double price = entry.get_price();
-    constexpr double TAX = 0.12;
+    const double TAX = 0.12 * price;
 
     cout << "Your cash: " << cash << endl;
 
@@ -103,7 +97,6 @@ bool User::buy(Book& entry)
     qty  =  Prompt::prompt("\t\tHow many? ");
     wealth = cash;
 
-    //---computations--
     //bawasan na ang cash ng user
     wealth -= (price * qty); 
 
@@ -111,20 +104,20 @@ bool User::buy(Book& entry)
     {
         cerr << "\t\tYou don't have enough money\n"
              << "\t\tBalance: " << cash
-             << "\n\t\tRemaining Amount: " << wealth << endl;
+             << "\n\t\tRemaining Balance: " << wealth << endl;
 
         return 0;  //not enough cash
     }
 
-    total = wealth;
-    //TO DO: compute the payment with tax
+    total = price * qty;
     
-    /******store the transactions********/
-    records.push_back({qty, price, wealth, TAX, total, entry.get_title()});
+    //store the transactions
+    records.push_back({qty, price, wealth, TAX, total, 
+                       entry.get_title(), time_stamp()});
     user[name] = records; //record the name of user
 
     cout << "\t\tBalance: " << cash
-         << "\n\t\tRemaining Amount: " << wealth << endl;
+         << "\n\t\tRemaining Balance: " << wealth << endl;
 
     cash = wealth;         //remaining cash
 
@@ -135,7 +128,7 @@ bool User::buy(Book& entry)
 //|--------------------- PRINT ALL OF THE RECORDED PURCHASES -----------------
 void User::history(void)
 {
-    cout << "\n\t\t-------- History of Transactions --------\n\n";
+    cout << "\n\t\t----------------------- History of Transactions ------------------------------\n\n";
     unordered_map<string, vector<Receipt> >::iterator got;
 
     if((ismap_filled("It's like space...\n", got)) == false)
@@ -149,7 +142,7 @@ void User::history(void)
 //|------------------------ RECENT PURCHASE -----------------------
 void User::recent(void)
 {
-    cout << "\n\t\t------------ Last Transaction ------------\n\n";
+    cout << "\n\t\t----------------------- Last Transaction(s) ------------------------------\n\n";
     unordered_map<string, vector<Receipt> >::iterator last;
 
     if((ismap_filled("Nothing to do here...\n", last)) == false)
@@ -167,35 +160,26 @@ void User::get_balance(void)
 }
 
 //|---------------------- OVERLOAD OPERATOR -----------------------
+//used for receipt 
 ostream& operator <<(ostream& os, Receipt& rcpt)
 {
-    os << "\n\t\t***********************************************\n"
-       << "\n\t\tQty\tTitle\t\tPrice\n\n"
+    os << "\n\t\t" << "Date of Transaction" << setw(50) << rcpt.time
+       << "\n\t\t" << "-------------------------------------------------------------------" << endl
+       << "\n\t\tQty\tTitle\t\t\t\tPrice\n\n"
        << "\t\t" << rcpt.qty << "\t" << rcpt.title
-       << "\t\t" << rcpt.price << endl;
-    os << "\n\t\t***********************************************\n"
-       << "\n\t\tCash " << rcpt.cash << "\tTax " << rcpt.tax << "\t\t"
-       << rcpt.total << endl;
+       << "\t\t\t\t" << rcpt.price << endl;
+    os << "\n\t\t" << "-------------------------------------------------------------------" << endl
+       << "\n\t\tCash " << rcpt.cash << "\tTax " << rcpt.tax
+       << "\t\tTotal Amount " << rcpt.total << endl;
 
     return os;
 
 }
 
-/*
- * check kung may mga records nakalagay sa un_map
- * if wala -- return --
- * else check again kung may stored records ang user
- *      if wala -- return --
- *  if all conditions are -- true -- return successful
- *
- */
 bool User::ismap_filled(const string& msg, unordered_map
                         <string, vector<Receipt> >::iterator& eu)
+//find user existing transaction history
 {
-
-/* debug: cout << user.size() << " Size\n";
-          cout << user.count(name) << " Exist\n";
-*/
     if((user.empty()))
     {
         cout << msg; 
@@ -209,6 +193,19 @@ bool User::ismap_filled(const string& msg, unordered_map
         return false; //user ay walang records of transactions
     }
     return true;     //not empty && contains history of records
+}
+
+//|------------------------- Get current time ------------------
+string time_stamp(void)
+    //will return the string passed in ostringstream
+{
+   ostringstream s;
+   std::time_t t = 
+       chrono::system_clock::to_time_t(chrono::system_clock::now());
+
+   s << put_time(localtime(&t), "%c %p \n");
+
+        return s.str();
 }
 
 } //end of Consumer

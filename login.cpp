@@ -1,8 +1,10 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <iomanip>
 #include "login.h"
 #include "prompt.h"
+#include "screen.h"
 
 
 using std::cout;
@@ -11,8 +13,11 @@ using std::getline;
 using std::string;
 using std::map;
 using std::iterator;
-using std::pair;
+using std::setw;
+using std::endl;
+using namespace CONSOLE;
 
+namespace Hook {      
 //ctor
 Admin::Admin(void)
 {
@@ -25,34 +30,58 @@ Admin::~Admin(void)
 {
 }
 
-void Admin::login(void)
+bool Admin::login(void)
 /* ##main function that operates on user login interface 
  *
  * Note: getline admin username and pass
- * dapat kukuhanin lang ay alnum pag iba binigay
- * reset and ask again. so INF loop ay maiwasan
+ *       IF TRUE admin login i/f will exit
+ *       otherwise continue
  */
 {
-    cin.ignore(); //ignore any input characters in stream 
+    short int indent = 50,
+              extra_indt = 5;
 
-    cout << "\t==============================\n";
-    cout << "\tAdmin: ";
+    cout << setw(indent + extra_indt) << ' ' << 
+         setw(indent / extra_indt);
+    press_key("Enter space for both admin and password to go back in main menu");
+    ClearScreen();
+
+    cout << setw(indent + extra_indt) << ' ' << 
+         setw(indent / extra_indt) <<
+        "==============================\n";
+
+    cout << setw(indent + extra_indt) << ' ' << 
+    setw(indent / extra_indt - 5) <<
+        "Admin: ";
         getline(cin, name); 
-    cout << "\tPassword: ";
-        getline(cin, pass);
-    cout << "\t=============================\n";
 
-    //find some exit
+    cout << setw(indent + extra_indt) << ' ' << 
+    setw(indent / extra_indt - 5) <<
+        "Password: ";
+        pass = hide_pass();
+
+    cout << endl << setw(indent + extra_indt) << ' ' << 
+         setw(indent / extra_indt) <<
+        "==============================\n";
+
+    //exit admin i/f
+     if(name.length() <= 0 && pass.length() <= 0)
+        return true; 
+
     if(find_user())
     {
        cout << "\n\nWelcome, " << name << "."; 
-       //get the func to show here
+       return false;        //continue
     }
     else
     {
         cout << "\n\tUsername and Password error...\n";
+        press_key();
+        ClearScreen();
         login(); //recursively call for prompt again
     }
+
+    return true;
 }
 
 //parsing the name and password to be true
@@ -67,15 +96,14 @@ bool Admin::find_user(void)
     inf.open("acc.dat");
 
     //reading the file
-    if(!inf) Prompt::error("Could not open the file ");
+    if(!inf) Prompt::error("Error 098: user is data corrupted");
          
     //parsing the lines
     for(string w ; inf >> nm >> pw; )
-        users.insert(pair<string, string>(nm, pw));
+        users[nm] = pw;
 
     //returns the 1st n of this iterator assgnd
-    map<string,string>::iterator it = users.begin(); 
-    for(;it != users.end(); ++it)
+    for(auto it = users.begin(); it != users.end(); ++it)
     {
         //comparing the parse lines to the input
         if(name == it->first && pass == it->second)
@@ -83,3 +111,5 @@ bool Admin::find_user(void)
     }
     return state;
 }
+
+} //end of Hook namespace

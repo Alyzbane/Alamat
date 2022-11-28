@@ -14,6 +14,8 @@ using std::endl;
 using std::runtime_error;
 using std::isnormal;
 using std::signbit;
+using std::istream;
+using std::getline;
 
 namespace Prompt //start of prompt 
 {
@@ -88,6 +90,16 @@ bool natural_num(double& nn)
      if((isnormal(nn) == true) && (signbit(nn) == true))
          return false; //
 
+    return true;
+}
+bool is_digit(string& s)
+{
+    string dgt;
+    for(char& n : s)
+    {
+        if(!isdigit(n))
+            return false;
+    }
     return true;
 }
 } //end of prompt

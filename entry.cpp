@@ -1,5 +1,6 @@
 #include <sstream>
 #include <iomanip>
+#include <sstream>
 #include "entry.h"
 #include "prompt.h"
 #include "menu.h"
@@ -7,41 +8,32 @@
 using namespace std;
 using Prompt::natural_num;
 
+namespace Tome {
 //|----------Constructor--------------
 Book::Book(void)
 {
     author = " ";
     title = " ";
     isbn = " ";
-    genres.push_back(" ");
     number = 0;
     stocks = 0;
     price = 0.00;
 }
 //|------Ctor user initialized arguments----------------
-Book::Book(int n, int s, double p,std::string au,
-             std::string tt, std::string ibn,
-             std::vector<std::string> gen)
+Book::Book(int n, int s, double p, string au,
+             string tt, string ibn,
+             vector<string> gen)
     : number(n), stocks(s), price(p),           //initialize the values
       author(au), title(tt), isbn(ibn), genres(gen) 
 {
 }
 
-//|-------Used for 0 index of array----------
-void Book::create(int n, int s, double p,std::string au,
-             std::string tt, std::string ibn,
-             std::vector<std::string> gen)
-{
-    number = n, stocks = s, price = p;           //initialize the values
-    author = au, title = tt, isbn = ibn, genres = gen;
-}
-
-//|--------Operator Overloads--------------
+//|-------- OPERATOR OVERLOAD --------------
 ostream& operator <<(ostream& ost, const Book& b)
 {
     
     //printing all books in the archives
-        ost << "-> ["      << b.number << "] " 
+        ost << "-> ["      << b.number << "]" 
              << " Title:  "  << b.title << "\n "
              << " \tAuthor: " << b.author << "\n ";
         ost << " \tGenres: "; 
@@ -54,26 +46,40 @@ ostream& operator <<(ostream& ost, const Book& b)
              << fixed             << setprecision(2)
              << " \tPrice:  "     << b.price << "\n\n";
 
-        return ost;
+     return ost;
+}
+
+ofstream& operator <<(ofstream& out, const Book& b)
+{   
+    out  << "{ " << '"' << b.title << "\" \"" << b.author << '"'; 
+
+    for(auto& w : b.genres)
+        out << '"' << w << '"';
+
+    out << " , " << b.number << " , " << b.isbn << " , " 
+        << b.stocks << " , " << fixed << setprecision(2) 
+        << b.price << " }" << endl;
+
+    return out;
 }
 
 //|-------Member  Functions-----------
 void Book::insert(const int n)
 {
     const double TAX = 0.12;
-    string s; //taking the genres
+    string s; 
 
+    //taking the inputs
     cout << "Title:\t";
     getline(cin, title);
-
     cout << "Author:\t";
     getline(cin, author);
 
     cout << "\nEnter in delimited by space eg. action drama...\n";
-    cout << "Genre:\t";
+    cout << "Genres: ";
     getline(cin, s);
 
-    std::stringstream ss(s); //break the words
+    stringstream ss(s); //break the words
     for(string word; ss >> word;) 
         genres.push_back(word); //vector handles the words
 
@@ -132,4 +138,26 @@ int Book::get_no(void) const
 string Book::get_title(void) const
 {
     return title;
+}
+
+vector<string> split(const string& text, const string& delims)
+    //will split the strings
+{
+    vector<string> tokens;
+
+    //continously find the delims
+    size_t start = text.find_first_not_of(delims),
+           end = 0;
+    //read until the end
+    while((end = text.find_first_of(delims, start)) != string::npos)
+      {
+        tokens.push_back(text.substr(start, end - start)); //n + end take string
+        start = text.find_first_not_of(delims, end);  //find another delim
+      }
+    if(start != string::npos)       //take the remaining strings
+     tokens.push_back(text.substr(start));
+
+    return tokens;
+}
+
 }

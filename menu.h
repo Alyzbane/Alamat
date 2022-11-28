@@ -32,8 +32,5 @@ void update_book (int& goods, double& cost);
 //utility functions
 bool ask_opt(void (*menus) (void), const std::string& msg);
 void show_exit(bool& state, bool& close);
-bool Print(const Book& srch);
-void press_key(void);
-
 }
 #endif

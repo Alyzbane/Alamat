@@ -3,6 +3,7 @@
 
 #include <string>
 
+namespace Hook {
 class Admin 
 {
         public:
@@ -10,7 +11,7 @@ class Admin
             ~Admin();
 
          //modifying functions
-        void login(void);
+        bool login(void);
         bool find_user(void);
 
       
@@ -18,5 +19,5 @@ class Admin
           std::string name;
           std::string pass;
 };
-
+};
 #endif

@@ -9,6 +9,9 @@ using std::endl;
 using std::string;
 using std::cin;
 using std::vector;
+using Tome::Book;
+using Hook::Admin;
+using namespace CONSOLE;
 
 
 namespace Menu //start of menu namespace
@@ -108,7 +111,7 @@ int show_main (bool& state, bool& close)
     enum {EXIT, ADMIN, USER}; 
     int cmen; //pick menu
 
-    //closes the program
+    //closes the program using the exit function
     if(close == true)
         return -1; 
 
@@ -124,8 +127,8 @@ int show_main (bool& state, bool& close)
         //prompt option is legal
      {
         case ADMIN:  //admin
-            state = false; //show admin i/f
-            alpha.login();
+            //show admin i/f
+            state = alpha.login(); //show admin i/f
             break;
         case USER:
             state = false; //show user i/f
@@ -138,7 +141,8 @@ int show_main (bool& state, bool& close)
      }
      press_key();
      ClearScreen();
-    }
+    } 
+
     return cmen;
 }
 
@@ -168,7 +172,6 @@ void show_user(Archive& book, User& buyer, bool& state, bool& close)
             case SEARCH:
                recent = book.search();  
                srch_history.push_back({recent});
-               Print(recent);
                break;
             case BUY:
                buyer.find(book);
@@ -185,7 +188,7 @@ void show_user(Archive& book, User& buyer, bool& state, bool& close)
             case EXIT:
                show_exit(state, close);
                exit = true; //temp set the exit sa true
-               break; //going back to main menu 
+               return;
             default:
                cout << "Illegal command\n";
                break;
@@ -213,7 +216,6 @@ void show_admin(Archive& book, User& buyer, bool& state, bool& close)
         {
             case SEARCH:
                 recent = book.search(); 
-                Print(recent); //will check if the return search is valid
                 break;
             case INSERT:
                 book.insertArch();
@@ -227,7 +229,7 @@ void show_admin(Archive& book, User& buyer, bool& state, bool& close)
             case EXIT:
                 show_exit(state, close); //going back to main menu 
                 exit = true;
-               break;
+                return;
             default:
                 cout << "Illegal command\n";
                 break;
@@ -275,6 +277,8 @@ void show_exit(bool& state, bool& close)
 {
    enum {BACK = 1, EXIT};
    int cmen;
+
+   ClearScreen();
    while(state != true)
    {
         exit_menu();
@@ -292,10 +296,12 @@ void show_exit(bool& state, bool& close)
                 cout << "Illegal command " << cmen << endl;
                 break;
         }
+       press_key();
+       ClearScreen();
    }
 }
 
-//|-------------------User Buying Interface------------------
+//|------------------- User Buying Interface ------------------
 bool ask_opt(void (*menus) (void), const string& msg)
 {
     bool ans = false; 
@@ -305,6 +311,7 @@ bool ask_opt(void (*menus) (void), const string& msg)
     cout << msg << endl;
     enum{YES = 1, NO};
     
+    ClearScreen();
     while(!exit)
     {
         menus();
@@ -316,39 +323,17 @@ bool ask_opt(void (*menus) (void), const string& msg)
              exit = true;
              break;
          case NO:
-             ans = false;
-             exit = true;
-             break;
-         default:
+             return false; 
+         default:  
              cout << "Illegal command " << cmd;
              break;
         }
+
+    press_key();
+    ClearScreen();
     }
 
     return ans;
 }
 
-//Showing the returned search entry book
-bool Print(const Book& srch)
-{
-    if((srch.get_no()) == 0)
-    {
-     cout << "Archive is empty...\n\n";
-     return false;
-    }
-    else
-    {
-     cout << srch;
-     return true;
-    }
-}
-
-void press_key(void)
-{
-    cin.ignore();
-    cout << "\nPress the enter key to continue...";
-    cin.get();
-
-    return;
-}
 } //end of Menu namespace

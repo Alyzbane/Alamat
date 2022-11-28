@@ -4,27 +4,29 @@
 #include <string>
 #include "entry.h" //using the entry_datas() at insertArch(...)
 
+
 class Archive 
 {
+    //friend std::ifstream& operator >>(std::ifstream& in, Archive& arc);
+
     private:
-        Book *head;
-        int capacity;
-        int cur_size;
+        std::vector<Tome::Book> head;
+        Tome::Book info;
+        std::string fpath;
         int find_entry(int &n) const;
-        void grow(void);
         int exist(int& n);
 
     public:
         //non modifying 
         Archive();
         ~Archive();
-        Book search();
+        Tome::Book search();
         void show();
 
         //modifying
         void insertArch();         
         void update();
-        void change(Book& ee, int& n);
+        void change(Tome::Book& ee, int& n);
 
 };
 

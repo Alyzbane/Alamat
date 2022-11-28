@@ -12,6 +12,7 @@ using std::cin;
 using std::endl;
 using std::string;
 using std::cerr;
+using Tome::Book;
 
 int main(void)
 {
