@@ -61,9 +61,7 @@ void User::find(Archive& arch)
 
     if(item.get_no() == 0)
         return;
-
-    cout << item;
-
+       
     //printing the book information
     load = buy(item);
 
