@@ -1,15 +1,18 @@
+#include <iostream>
+#include <fstream>
 #include "screen.h"
 #include "prompt.h"
 
+using namespace std;
+
+namespace CONSOLE { 
 #if defined (WIN32) || defined(_WIN32) || defined(__NT__) || defined(_WIN64)
 #include <windows.h>
 #include <tchar.h>
-#include <iostream>
-#include <fstream>
 
-using namespace std;
 
-namespace CONSOLE {         //start of console namespace
+
+        //start of console namespace
 
 void ClearScreen(void)
 { 
@@ -72,7 +75,7 @@ string mask_pass(void)
     return pwd;
 }
 
-#elif (__LINUX__) //linux
+#elif (__LINUX__) || (__linux__) //linux
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
