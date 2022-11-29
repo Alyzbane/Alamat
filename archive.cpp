@@ -103,6 +103,8 @@ Book Archive::search(void)
         return head[ex];
     }
 
+    //printing the book detail
+    cout << head[ex] << endl;
     return head[ex];
 }
 
@@ -167,7 +169,6 @@ int Archive::exist(int& n)
 
     return exist;
 }
-
 
 //changing the value of entry in archive
 void Archive::change(Book& ee, int& n)
