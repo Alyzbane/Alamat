@@ -16,6 +16,7 @@ std::string mask_pass(void);
 
 void ClearScreen(void);
 std::string hide_pass(void);
+void press_key(std::string msg =  "Press the enter key to continue...");
 
 #else 
 void ClearScreen(void);

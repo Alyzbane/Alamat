@@ -99,6 +99,13 @@ string hide_pass(void)
      return pwd;
 }
 
+void press_key(string msg) 
+    //console echo will be off
+{
+    cin.ignore();
+    cout << endl << msg;
+    cin.get();
+}
 
 #else 
 #include <iostream>
