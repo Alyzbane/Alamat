@@ -20,7 +20,9 @@ void main_menu(void);
 void admin_menu(void);
 void user_menu(void);
 void update_menu(void);
-void buy_menu(void);
+void exit_menu(void);
+void buy_menu(std::string msg = "Do you want to buy again?");
+void search_menu(void);
 
 //prompting the user
 void show_dummy (Archive& book, User& buyer, bool& state, bool& close);
@@ -30,7 +32,7 @@ int show_main (bool& state, bool& close);
 void update_book (int& goods, double& cost);
 
 //utility functions
-bool ask_opt(void (*menus) (void), const std::string& msg);
+bool ask_opt(const std::string& note);
 void show_exit(bool& state, bool& close);
 }
 #endif

@@ -13,7 +13,8 @@ namespace Consumer { //start of consumer namespace
     int qty;
     double price;
     double cash;
-    double tax;
+    double tax;  
+    double VAT;    //original price of the book
     double total;
     std::string title;
     std::string time; 
@@ -26,11 +27,9 @@ namespace Consumer { //start of consumer namespace
       std::vector<Receipt> records;
       std::string name;
       double cash;
-      bool buy(Tome::Book& entry);        //archive here to store values
+      int buy(Tome::Book& entry);        //archive here to store values
       bool ismap_filled(const std::string& msg, std::unordered_map
                              <std::string, std::vector<Receipt> >::iterator& eu);
-                       
-
     public:
         //modifying functions
         User();
@@ -38,8 +37,9 @@ namespace Consumer { //start of consumer namespace
         void find(Archive& arch);
 
         //non modifying functions
-        void get_balance(void);
-        void history(void);
+        void get_cash(void);
+        void user_history(void);
+//TO DO:        void all_history(void);
         void recent(void);
 
  };     

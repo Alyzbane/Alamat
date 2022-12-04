@@ -15,12 +15,12 @@ std::string mask_pass(void);
 #elif (__LINUX__) || (__linux__)
 
 void ClearScreen(void);
-std::string hide_pass(void);
 void press_key(std::string msg =  "Press the enter key to continue...");
+std::string hide_pass(void);
 
 #else 
 void ClearScreen(void);
 #endif
 
 #endif
-};
+}

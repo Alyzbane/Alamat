@@ -13,20 +13,23 @@ class Archive
         std::vector<Tome::Book> head;
         Tome::Book info;
         std::string fpath;
-        int find_entry(int &n) const;
+        int find_entry(int &n); 
+        int search_by(void);
         int exist(int& n);
+        int search_str(const int &c);
+        int dsp_take(std::vector<int> & res);
 
     public:
         //non modifying 
         Archive();
         ~Archive();
         Tome::Book search();
-        void show();
-
+        bool empty_archive(void);
+        void show(void);
         //modifying
         void insertArch();         
         void update();
-        void change(Tome::Book& ee, int& n);
+        bool change(Tome::Book& ee, int& n);
 
 };
 

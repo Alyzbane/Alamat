@@ -10,6 +10,7 @@
 using namespace std;
 using namespace Tome;
 using Prompt::natural_num;
+using Menu::ask_opt;        //used by find and buy function
 
 namespace Consumer { //start of Consumer 
 User::User()
@@ -17,7 +18,7 @@ User::User()
      cash {0.00}
 {
 }
-//prompt the user for their wealth 
+//prompt the user for their money 
 bool User::wallet(void)
 {
     double m;
@@ -59,20 +60,22 @@ void User::find(Archive& arch)
     bool again;
     int load;
 
-    if(item.get_no() == 0)
+    if(item.get_no() == 0) //go back if default value is returned
         return;
-       
+
     //printing the book information
+    //bug here
     load = buy(item);
 
-    if(load == 0)
+    if(load == 0 || load == -1)
     {
         return; //cash is not enough
     }
+    //TO DO: record the recent bulk purchase of books
 
-    arch.change(item, load); //computing the remaining stocks
+    if(!arch.change(item, load)) return; //computing the remaining stocks
     
-    again = Menu::ask_opt(Menu::buy_menu, "\n\t\tWould you like to buy again?");
+    again = Menu::ask_opt("\n\t\tWould you like to buy again?");
     if(again == true)   //will recursively calls to buy a book
     {
         find(arch); 
@@ -81,50 +84,61 @@ void User::find(Archive& arch)
 }
 
 //$-$--$----------------- BUYING --------------------$-$--$
-bool User::buy(Book& entry)
+int User::buy(Book& entry)
 {
     //store lahat ng bibilhin na libro
+    enum {TAB = 16, NOTES = 8};
     int qty;
-    double  total, wealth;
+    double  total, change;
     double price = entry.get_price();
-    const double TAX = 0.12 * price;
 
-    cout << "Your cash: " << cash << endl;
+    cout << setw(TAB) << "Your cash: " << cash << endl;
 
-    cout << "\t\tBooks to buy\n";
     qty  =  Prompt::prompt("\t\tHow many? ");
-    wealth = cash;
+    while(!(entry.min_stocks(qty)))
+    {
+        qty = Prompt::prompt("\t\tHow many? ");
+        if(qty == 0) return -1;         //out of stocks
+    }
+
+    change = cash;
 
     //bawasan na ang cash ng user
-    wealth -= (price * qty); 
+    change -= (price * qty); 
 
-    if(natural_num(wealth) == false)
+    if(natural_num(change) == false)
     {
-        cerr << "\t\tYou don't have enough money\n"
-             << "\t\tBalance: " << cash
-             << "\n\t\tRemaining Balance: " << wealth << endl;
+        cerr << setw(TAB) << "You don't have enough money\n"
+             << setw(TAB) << "Cash: " << cash << endl
+             << setw(TAB) << "Change: " << change << endl;
 
         return 0;  //not enough cash
     }
 
     total = price * qty;
-    
+    const double TAX = total * 0.10716;
+    const double VAT = total - TAX;
+
+    //prompt for confirmation
+    if(!(ask_opt("Do you wish to buy this book " + entry.get_title())))
+        return -1; //did not buy the book
+
+
     //store the transactions
-    records.push_back({qty, price, wealth, TAX, total, 
+    records.push_back({qty, price, change, TAX, VAT, total, 
                        entry.get_title(), time_stamp()});
     user[name] = records; //record the name of user
 
-    cout << "\t\tBalance: " << cash
-         << "\n\t\tRemaining Balance: " << wealth << endl;
+    cout << setw(TAB) << "Cash: " <<   setw(NOTES) << cash << endl
+         << setw(TAB) << "Change: " << setw(NOTES) << change << endl;
 
-    cash = wealth;         //remaining cash
+    cash = change;         //remaining cash
 
-    cout << "Thank you for buying!...\n";
+    cout << setw(TAB) << "Thank you for buying!...\n";
     return qty; // used for computing the archive stocks
 }
-
 //|--------------------- PRINT ALL OF THE RECORDED PURCHASES -----------------
-void User::history(void)
+void User::user_history(void)
 {
     cout << "\n\t\t----------------------- History of Transactions ------------------------------\n\n";
     unordered_map<string, vector<Receipt> >::iterator got;
@@ -137,6 +151,8 @@ void User::history(void)
             cout << vals << endl;
 }
 
+//TO DO SHow history of users transactions to admin
+
 //|------------------------ RECENT PURCHASE -----------------------
 void User::recent(void)
 {
@@ -146,13 +162,14 @@ void User::recent(void)
     if((ismap_filled("Nothing to do here...\n", last)) == false)
         return; //will only print the recent purchase not bulk
 
+    //TO DO: print all same timespans of purchases
     //will only print the recent purchase not bulk
     cout << last->second.back() << endl;
 
 }
 
 //----------------------- UTILITY FUNCTIONS ------------------------
-void User::get_balance(void)
+void User::get_cash(void)
 {
     cout << "\t\tRemaining Balance: " << cash << endl;
 }
@@ -161,14 +178,34 @@ void User::get_balance(void)
 //used for receipt 
 ostream& operator <<(ostream& os, Receipt& rcpt)
 {
-    os << "\n\t\t" << "Date of Transaction" << setw(50) << rcpt.time
-       << "\n\t\t" << "-------------------------------------------------------------------" << endl
-       << "\n\t\tQty\tTitle\t\t\t\tPrice\n\n"
-       << "\t\t" << rcpt.qty << "\t" << rcpt.title
-       << "\t\t\t\t" << rcpt.price << endl;
-    os << "\n\t\t" << "-------------------------------------------------------------------" << endl
-       << "\n\t\tCash " << rcpt.cash << "\tTax " << rcpt.tax
-       << "\t\tTotal Amount " << rcpt.total << endl;
+    enum {TAB = 16, NOTES = 4, HALF = 30, PR = 6, HEADER = 60};
+    os << setw(TAB) << ' ' << "Date of Transaction" 
+       << setw(HEADER - TAB) << ' ' << rcpt.time << '\n';
+
+    os << setw(TAB) << ' ' << std::string(HEADER + TAB + NOTES * 2, '-') << '\n';         //line br
+
+    os  << setw(TAB) << ' ' << "Qty" << setw(HALF) << ' ' << "Title"         //title
+        << setw(HEADER - HALF + 5) << ' ' << "Price\n\n";
+
+    os  << setw(TAB - 2) << ' ' << setw(NOTES) << rcpt.qty 
+        << setw(HALF - PR - 2) << ' ' << setw(TAB) << rcpt.title    //title contents
+        << setw(HEADER - HALF - NOTES) << ' ' << setw(PR) << left << rcpt.price  << '\n';
+
+    os << setw(TAB) << ' ' << std::string(HEADER + TAB + NOTES * 2, '-') << '\n';         //line br
+
+    os << setw(TAB) << ' ' << "Tax" << setw(NOTES) << ' ' 
+       << setw(NOTES) << left << rcpt.tax
+       << setw(HEADER - TAB + 9) << ' ' << setw(PR) << "Cash" << setw(NOTES) << ' ' 
+       << setw(NOTES) << left << rcpt.cash << '\n';
+
+    os << setw(TAB)   << ' ' << "VAT"  << setw(NOTES) << ' ' 
+       << setw(NOTES) << rcpt.VAT
+       << setw(HEADER - TAB + NOTES * 2)    << ' ' << setw(PR) << "Change" << setw(NOTES) << ' ' 
+       << setw(NOTES) << left << "100" << '\n'
+       << setw(HEADER + TAB)  << ' ' << "Total Amount" 
+       << setw(NOTES) << ' ' << setw(PR) << left << rcpt.total << '\n';
+
+
 
     return os;
 

@@ -11,7 +11,9 @@ class Admin
             ~Admin();
 
          //modifying functions
-        bool login(void);
+        void login(bool& state);
+        void welcome(void);
+
         bool find_user(void);
 
       

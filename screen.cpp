@@ -1,18 +1,14 @@
-#include <iostream>
 #include <fstream>
 #include "screen.h"
 #include "prompt.h"
 
-using namespace std;
-
-namespace CONSOLE { 
 #if defined (WIN32) || defined(_WIN32) || defined(__NT__) || defined(_WIN64)
 #include <windows.h>
 #include <tchar.h>
 
+using namespace std;
 
-
-        //start of console namespace
+namespace CONSOLE {         //start of console namespace
 
 void ClearScreen(void)
 { 
@@ -45,16 +41,9 @@ string hide_pass(void)
 void press_key(string msg) 
     //console echo will be off
 {
-    HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE); 
-    DWORD mode = 0;
-    GetConsoleMode(hStdin, &mode);
-    SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
-
     cin.ignore();
     cout << endl << msg;
-    cin.get();
-
-    SetConsoleMode(hStdin, mode);
+    string ss = hide_pass();
 }
 
 string mask_pass(void)
@@ -80,6 +69,8 @@ string mask_pass(void)
 #include <termios.h>
 #include <unistd.h>
 
+using namespace std;
+
 void ClearScreen(void)
 {
     printf("\033[H\033[J"); //ansi compatible
@@ -103,12 +94,12 @@ void press_key(string msg)
     //console echo will be off
 {
     cin.ignore();
-    cout << endl << msg;
-    cin.get();
+    cout << msg << endl;
+    char *c;
+    scanf("%c", c);
 }
 
 #else 
-#include <iostream>
 void ClearScreen(void)
 {
   for(int i = 0; i < 50; i++)

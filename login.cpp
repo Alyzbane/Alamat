@@ -30,7 +30,7 @@ Admin::~Admin(void)
 {
 }
 
-bool Admin::login(void)
+void Admin::login(bool& state)
 /* ##main function that operates on user login interface 
  *
  * Note: getline admin username and pass
@@ -41,10 +41,13 @@ bool Admin::login(void)
     short int indent = 50,
               extra_indt = 5;
 
+    press_key();
+    ClearScreen();
+
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt);
-    press_key("Enter space for both admin and password to go back in main menu");
     ClearScreen();
+    cout << "Enter 0 to go back in main menu\n";
 
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt) <<
@@ -55,6 +58,13 @@ bool Admin::login(void)
         "Admin: ";
         getline(cin, name); 
 
+    //exit login prompt
+    if(name == "0")
+    {
+        state = true;
+        return;
+    }
+
     cout << setw(indent + extra_indt) << ' ' << 
     setw(indent / extra_indt - 5) <<
         "Password: ";
@@ -64,24 +74,17 @@ bool Admin::login(void)
          setw(indent / extra_indt) <<
         "==============================\n";
 
-    //exit admin i/f
-     if(name.length() <= 0 && pass.length() <= 0)
-        return true; 
-
     if(find_user())
     {
-       cout << "\n\nWelcome, " << name << "."; 
-       return false;        //continue
+       state = false; 
+       return;
     }
     else
     {
         cout << "\n\tUsername and Password error...\n";
-        press_key();
-        ClearScreen();
-        login(); //recursively call for prompt again
+        login(state); //recursively call for prompt again
+        return;
     }
-
-    return true;
 }
 
 //parsing the name and password to be true
@@ -110,6 +113,11 @@ bool Admin::find_user(void)
             state = true;
     }
     return state;
+}
+
+void Admin::welcome(void)
+{
+    cout << "Welcome " << name << '\n';
 }
 
 } //end of Hook namespace

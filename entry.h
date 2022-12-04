@@ -31,13 +31,17 @@ class Book
         Book(); //ctor
         void insert(const int n); 
         void revise();
-        int min_stocks(int& n);
+        bool min_stocks(int& n);
 
         //non-modifying funcs
         double get_price(void);
         int get_stocks(void);
         int get_no(void) const;
         std::string get_title(void) const;
+        std::string get_isbn(void) const;
+        std::string get_author(void) const;
+        bool category(std::string &s);
+
 };
 
 std::vector<std::string> split(const std::string& text, const std::string& delims);

@@ -28,7 +28,7 @@ double prompt(const string &message)
 
     while(true)
     {
-        if(cin >> n) return n;
+        if(cin >> n && natural_num(n)) return n;
 
         skip_to_int(message); //input is not a number
     }
@@ -87,8 +87,8 @@ void skip_to_int(const string &mensahe)
 //checks wether the arg num is valid and does exist in real world
 bool natural_num(double& nn)
 {
-     if((isnormal(nn) == true) && (signbit(nn) == true))
-         return false; //
+     if((isnormal(nn) == false) && (signbit(nn) == true))
+         return false;
 
     return true;
 }
@@ -101,5 +101,15 @@ bool is_digit(string& s)
             return false;
     }
     return true;
+}
+
+bool is_text(string& s)
+{
+   for(char& c : s)
+   {
+        if(!isprint(c))         //either control char or newline
+            return false;
+   }
+   return true;         //printable characters
 }
 } //end of prompt

@@ -1,6 +1,7 @@
 #include <sstream>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 #include "entry.h"
 #include "prompt.h"
 #include "menu.h"
@@ -39,7 +40,15 @@ ostream& operator <<(ostream& ost, const Book& b)
         ost << " \tGenres: "; 
 
    //for each  word found in the genre
-     for(auto& w : b.genres) ost << w << ". ";
+     for(auto w = b.genres.begin(); w != b.genres.end(); ++w)
+     {
+         ost << *w << ", ";
+         if(next(w) == b.genres.end())
+         {
+             ost << *w << '\n';
+             break;
+         }
+     }
 
         ost << "\n \tISBN:   "    << b.isbn << "\n "
              << " \tStocks: "     << b.stocks << "\n " 
@@ -66,7 +75,6 @@ ofstream& operator <<(ofstream& out, const Book& b)
 //|-------Member  Functions-----------
 void Book::insert(const int n)
 {
-    const double TAX = 0.12;
     string s; 
 
     //taking the inputs
@@ -92,7 +100,7 @@ void Book::insert(const int n)
 
     //tax calculation
     //TO DO: fix error prone of price
-    price = (TAX * price) + price;
+    //price = (TAX * price) + price;
     number = n;
 }
 
@@ -103,23 +111,23 @@ void Book::revise(void)
 }
 
 // arg passed is by user found in computation function
-int Book::min_stocks(int& n)
+bool Book::min_stocks(int& n)
 {
-    enum {OUT, MIN, SUCCESS};
     if(stocks == 0)         //check the remaining stocks
     {
       cout << "\nOut of stocks...\n";
-      return OUT;
+      cout << "Press 0 to return\n";
+      return false;
     }
     double dummy = stocks - n;            //compute stocks if valid
     if(natural_num(dummy) == false)
     {
       cout << "\nInvalid amount of quantity...\n";
-      return MIN; //will be prompt again to insert valid n
+      return false;         //stocks input is out of range
     }
 
     stocks -= n;
-    return SUCCESS;
+    return true;        //valid value of remaining stocks
 }
 
 //****************** UTILITY FUNCTIONS *********************
@@ -138,6 +146,23 @@ int Book::get_no(void) const
 string Book::get_title(void) const
 {
     return title;
+}
+
+string Book::get_author(void) const
+{
+    return author;
+}
+
+string Book::get_isbn(void) const
+{
+    return isbn;
+}
+bool Book::category(string &s)
+{
+    if((find(begin(genres), end(genres), s)) != genres.end())
+        return true;
+
+    return false;
 }
 
 vector<string> split(const string& text, const string& delims)
