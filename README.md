@@ -1,8 +1,17 @@
 # mataas-na-grade-sure-na-to-99.9-
 
-<h2> How to Run </h2>
-<p>Type this in the command prompt </p>
+<h2> Building from the source </h2>
+<p> Compile it using these make rules </p>
 <code> make entry.o login.o screen.o user.o alamat </code>
+
+<h2> How to Run </h2>
+<p>Type this in the command prompt</p>
+
+<h3>Windows</h3>
+<code> alamat </code>
+<h3>Linux</h3>
+<code> .\alamat </code>
+
 
 <h2> Help </h2>
 <p>If it returned some error during compilation. Remove the "-static-libstdc++" rule in the makefile...</p>
@@ -17,7 +26,7 @@ Kulang pa dito ay: <br />
        - price
        - isbn
        - title </s>  
-       - price (min, high)
+       - price (min, high) <br />
        
  3. user()
   <s>    3.1 show recent bought book
@@ -32,7 +41,7 @@ Kulang pa dito ay: <br />
     > redirect the information of picked book into a file
  <s>    > formatted using the buying()  </s>  
  
-Aayusin lang muna sa version na ito ay:
+<br />Aayusin lang muna sa version na ito ay:  <br />
  1. <s> mga class objects, yung sa main features eg. insert, search...
     1.1 hihiwalay/organize nalang yung mga helper functions </s>  
  2. <s> exception handling 
