@@ -1,14 +1,23 @@
 # mataas-na-grade-sure-na-to-99.9-
 
+<h2> How to Run </h2>
+<p>Type this in the command prompt </p>
+<code> make entry.o login.o screen.o user.o alamat </code>
+
+<h2> Help </h2>
+<p>If it returned some error during compilation. Remove the "-static-libstdc++" rule in the makefile...</p>
+
 Kulang pa dito ay: <br />
  <s>1. User/Admin interface</s>  
  <s> 1.1. back to first panel</s>
   
  2. search(func)
-  2.1. archive books are sorted sa kanilang catalog
-       - author
+   2.1. archive books are sorted sa kanilang catalog
+    <s>- author
        - price
-       - title
+       - isbn
+       - title </s>  
+       - price (min, high)
        
  3. user()
   <s>    3.1 show recent bought book
