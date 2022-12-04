@@ -1,7 +1,7 @@
 # mataas-na-grade-sure-na-to-99.9-
 
 <h2> Building from the source </h2>
-<p> Compile it using these make rules </p>
+<p> Compile it using these make rules. Use the command prompt for windows or bash for linux or whatever you have </p>
 <code> make entry.o login.o screen.o user.o alamat </code>
 
 <h2> How to Run </h2>
