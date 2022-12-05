@@ -2,35 +2,35 @@
 #define ARKIBOS_H
 
 #include <string>
+#include "entry.h" //using the entry_datas() at insertArch(...)
 
-#define TITLE_LEN 100
-#define AUTHOR_LEN 50
-#define ISBN_LEN 14
 
-struct Archive
+class Archive 
 {
-    std::string title;
-    std::string author;
-    std::string isbn;
-    int number;
-    int stocks;
-    double price;
-    struct Archive *next;
-};
+    //friend std::ifstream& operator >>(std::ifstream& in, Archive& arc);
 
-class Book 
-{
     private:
-        Archive *head;
+        std::vector<Tome::Book> head;
+        Tome::Book info;
+        std::string fpath;
+        int find_entry(int &n); 
+        int search_by(bool &level);
+        int exist(int& n);
+        int search_str(const int &c, bool &level);
+        int search_price(bool &level);
+        int dsp_take(std::vector<int> &res, bool &level); 
+
     public:
         //non modifying 
-        Book() {head = nullptr;}
-        void search();
-        void show();
-
+        Archive();
+        ~Archive();
+        Tome::Book search(bool level = false);
+        bool empty_archive(void);
+        void show(void);
         //modifying
         void insertArch();         
         void update();
+        bool change(Tome::Book& ee, int& n);
 
 };
 
