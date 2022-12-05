@@ -14,16 +14,17 @@ class Archive
         Tome::Book info;
         std::string fpath;
         int find_entry(int &n); 
-        int search_by(void);
+        int search_by(bool &level);
         int exist(int& n);
-        int search_str(const int &c);
-        int dsp_take(std::vector<int> & res);
+        int search_str(const int &c, bool &level);
+        int search_price(bool &level);
+        int dsp_take(std::vector<int> &res, bool &level); 
 
     public:
         //non modifying 
         Archive();
         ~Archive();
-        Tome::Book search();
+        Tome::Book search(bool level = false);
         bool empty_archive(void);
         void show(void);
         //modifying

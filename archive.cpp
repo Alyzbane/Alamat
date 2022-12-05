@@ -20,7 +20,6 @@ using std::cin;
 using std::endl;
 using std::cerr;
 using std::ws;
-using std::getline;
 using std::string;
 using std::ostream;
 using std::ofstream;
@@ -72,7 +71,7 @@ void Archive::insertArch(void)
 }
 
 ///|---------searching through archive using entry no------
-Book Archive::search(void)
+Book Archive::search(bool level)
 {
     //return default book if nothing is inserted
     if(empty_archive() == false)
@@ -81,7 +80,7 @@ Book Archive::search(void)
     int n;
 
     cout << "\t\tSearch a book\n";
-    if((n = search_by()) < 0)
+    if((n = search_by(level)) < 0)
         return head[0];
 
     if(n == 0) 
@@ -196,20 +195,11 @@ int Archive::find_entry(int &n)
 }
 
 //|------------------ Searching String based queries --------------------
-int Archive::search_str(const int &c)
+int Archive::search_str(const int &c, bool &level)
 {
-    cin.ignore();
-    cin.clear();
-    cout << "Enter query: ";
-    string query;
-    getline(cin, query);
-    while(true)
-    {
-        if(!(Prompt::is_text(query)))
-            getline(cin, query);
-        else
-            break;
-    }
+   cin.ignore();
+   cin.clear();
+   string query = Prompt::get_str("Enter query: ");
 
    enum {TITLE = 1, AUTHOR, GENRE, ISBN};
    vector<int> results {};
@@ -241,23 +231,26 @@ int Archive::search_str(const int &c)
 
        }
    }
-   if(results.empty())
-   {
-       cout << "Cannot found """ << query << """ in the archive\n";
-       return -1;
-   }
-
-   int n = dsp_take(results);
+   int n = dsp_take(results, level);
    return n;       //not found, return default book
 }
 
-int Archive::dsp_take(vector<int> &res)
+//------------------- Displaying all the result of query -------------
+int Archive::dsp_take(vector<int> &res, bool& level)
 {
-    //displaying all results
+    if(res.empty())
+    {
+       cout << "Cannot find the query in the archive\n";
+       return -1;
+    }
+
     cout << "Index\tEntry Number\n";
     for(auto& n : res)
         cout << n << " - \t" << head[n] << "\n";
+    if(level == false)
+        return 0;           // read-only (search)
 
+    // interact with results (user buying)
     int n = Prompt::prompt("Select an index\\entry number: ");
     if(static_cast<size_t> (n) <= head.size()) return n;
 
@@ -267,9 +260,51 @@ int Archive::dsp_take(vector<int> &res)
     
     return out;
 }
+//------------------ Sorting through the nums ---------------------
+int Archive::search_price(bool &level)
+{  
+    double min = 0, max = 0;
+    while(min == 0 && max == 0)
+    {
+     Menu::price_menu();
+     enum {CHEAP = 1, BARGAIN, EXPENSIVE, RETURN};
+     int c = Prompt::get_cmd();
+     switch(c)
+     {
+        case CHEAP:
+            min = 100;
+            max = 300;
+            break;
+        case BARGAIN:
+            min = 400;
+            max = 600;
+            break;
+        case EXPENSIVE:
+            min = 600;
+            max = 10000;
+            break;
+        case RETURN:
+            return 0;
+        default:
+            cout << "Error command " << c << ".\n";
+     }
+     CONSOLE::press_key();
+     CONSOLE::ClearScreen();
+    }
 
+    vector<int> results {0};
+    for(size_t i = 1; i < head.size(); ++i)
+    {
+        const double& pr = head[i].get_price();
+        if(pr >= min || pr <= max)
+            results.push_back(i);
+    }
+    int n = dsp_take(results, level); 
+
+    return n;
+}
 //|-------------------- Searching Options -----------------------
-int Archive::search_by(void)
+int Archive::search_by(bool& level)
 {
    enum {CLOSE, TITLE, AUTHOR, GENRE, ISBN, PRICE, ENTRY_N}; 
    bool state = true;
@@ -283,18 +318,19 @@ int Archive::search_by(void)
        switch(c)
        {
             case TITLE:
-                n = search_str(TITLE);
+                n = search_str(TITLE, level);
                 return n;
             case AUTHOR:
-                n = search_str(AUTHOR);
+                n = search_str(AUTHOR, level);
                 return n;
             case GENRE:
-                n = search_str(GENRE);
+                n = search_str(GENRE, level);
                 return n;
             case ISBN:
-                n = search_str(ISBN);
+                n = search_str(ISBN, level);
                 return n;
             case PRICE:
+                n = search_price(level);
                 return n;
             case ENTRY_N:
                 int out;
@@ -311,6 +347,6 @@ int Archive::search_by(void)
        }
        CONSOLE::ClearScreen();
    }
-   cout << "Cannot found the query in the archive\n";
+   cout << "Cannot find the query in the archive\n";
    return 0; //default book
 }

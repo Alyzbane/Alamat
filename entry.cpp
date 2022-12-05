@@ -45,7 +45,7 @@ ostream& operator <<(ostream& ost, const Book& b)
          ost << *w << ", ";
          if(next(w) == b.genres.end())
          {
-             ost << *w << '\n';
+             ost << *w;
              break;
          }
      }
@@ -78,21 +78,17 @@ void Book::insert(const int n)
     string s; 
 
     //taking the inputs
-    cout << "Title:\t";
-    getline(cin, title);
-    cout << "Author:\t";
-    getline(cin, author);
+    title = Prompt::get_str("Title:\t");
+    author= Prompt::get_str("Author:\t");
 
     cout << "\nEnter in delimited by space eg. action drama...\n";
-    cout << "Genres: ";
-    getline(cin, s);
+    s = Prompt::get_str("Genres:\t");
 
     stringstream ss(s); //break the words
     for(string word; ss >> word;) 
         genres.push_back(word); //vector handles the words
 
-    cout << "ISBN:\t";
-    getline(cin, isbn);
+    isbn = Prompt::get_str("ISBN:\t");
 
     //take input until its a number
     stocks = Prompt::prompt("Stocks:\t");

@@ -23,6 +23,7 @@ void update_menu(void);
 void exit_menu(void);
 void buy_menu(std::string msg = "Do you want to buy again?");
 void search_menu(void);
+void price_menu(void);
 
 //prompting the user
 void show_dummy (Archive& book, User& buyer, bool& state, bool& close);

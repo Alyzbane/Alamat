@@ -30,9 +30,8 @@ bool User::wallet(void)
         "====================================\n";
 
     cout << setw(indent + extra_indt) << ' ' << 
-         setw(indent / extra_indt - 5) <<
-         "Username: ";
-        getline(cin, name); 
+         setw(indent / extra_indt - 5);
+        name = Prompt::get_str("Username: "); 
 
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt - 5) <<
@@ -56,7 +55,9 @@ bool User::wallet(void)
 void User::find(Archive& arch)
 {
     Book item;
-    item = arch.search();  //this doesn't returned ref. to obj
+    item = arch.search(true);  //this doesn't returned ref. to obj
+                              //true - parameter interactive mode to 
+                              //query results
     bool again;
     int load;
 

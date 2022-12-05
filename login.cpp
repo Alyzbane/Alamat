@@ -9,7 +9,6 @@
 
 using std::cout;
 using std::cin;
-using std::getline;
 using std::string;
 using std::map;
 using std::iterator;
@@ -33,7 +32,7 @@ Admin::~Admin(void)
 void Admin::login(bool& state)
 /* ##main function that operates on user login interface 
  *
- * Note: getline admin username and pass
+ * Note: get_str admin username and pass
  *       IF TRUE admin login i/f will exit
  *       otherwise continue
  */
@@ -54,9 +53,8 @@ void Admin::login(bool& state)
         "==============================\n";
 
     cout << setw(indent + extra_indt) << ' ' << 
-    setw(indent / extra_indt - 5) <<
-        "Admin: ";
-        getline(cin, name); 
+    setw(indent / extra_indt - 5);
+        name =  Prompt::get_str("Admin: ");
 
     //exit login prompt
     if(name == "0")

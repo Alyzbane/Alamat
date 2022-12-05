@@ -108,13 +108,27 @@ void search_menu(void)
          << "\tSelect option\n";
         cout << "\t=================================================\n"
                 "\t| 1\t - title\t\t\t\t|\n"
-                "\t| 2\t - author\t\t\t\t\t|\n"
-                "\t| 3\t - genre\t\t\t\t\t|\n"
+                "\t| 2\t - author\t\t\t\t|\n"
+                "\t| 3\t - genre\t\t\t\t|\n"
                 "\t| 4\t - isbn\t\t\t\t\t|\n"
-                "\t| 5\t - price\t\t\t\t\t|\n"
-                "\t| 0\t - close\t\t\t\t\t|\n"
+                "\t| 5\t - price\t\t\t\t|\n"
+                "\t| 6\t - entry number\t\t\t|\n"
+                "\t| 0\t - close\t\t\t\t|\n"
                 "\t================================================="
                 << endl;
+}
+
+//|----------- USED FOR PRICE RANGE SEARCHING OPTION----------------
+void price_menu(void)
+{
+    cout << "\n\n--Price Category / Range--\n";
+      cout << "\nWhat would you like to update?\n" << endl;
+        cout << "\t=================================================\n"
+                "\t 1\t - cheap (100 -  300)\n"
+                "\t 2\t - bargain (400 - 600)\n"
+                "\t 3\t - expensive (600+)\n"
+                "\t 0\t - back\n"
+                "\t=================================================\n";
 }
 
 //|--------------dummy function------------------

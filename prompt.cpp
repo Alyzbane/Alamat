@@ -30,8 +30,25 @@ double prompt(const string &message)
     {
         if(cin >> n && natural_num(n)) return n;
 
-        skip_to_int(message); //input is not a number
+        skip_to_input(message, 0); //input is not a number
     }
+}
+
+string get_str(const string& msg)
+    //taking the string based inputs
+{
+    cout << msg;
+
+    string s;
+
+    while(true)
+    {
+        if(getline(cin, s) && is_text(s)) return s;
+
+        skip_to_input(msg, 1);
+    }
+
+    return s;
 }
 bool legal(int c) 
 {
@@ -66,19 +83,20 @@ void error (const string &message)
 }
 
 //checking if the input is true to its datatype
-void skip_to_int(const string &mensahe)
+void skip_to_input(const string &mensahe, const int& opt)
 {
     if(cin.fail()) //input is not integer
         cin.clear(); //remove all inputs in the buffer & errors state
-    
-    for(unsigned char ch; cin >>ch;)
+
+    int (*ch_manip[]) (int ch) = { isdigit, isprint}; 
+    for(unsigned char ch; cin >>ch;) 
     {
-        if(isdigit(ch))
+        if((*ch_manip[opt])(ch))
         {
-            cin.unget(); //give back the int
+            cin.unget(); //give back the input 
             return; //use it
         }
-        cout << "Input " << ch << " is not a number\n";
+        cout << "Invalid input: " << ch << '\n';
         cout << mensahe;
     }
     error("No input\n");
@@ -87,7 +105,7 @@ void skip_to_int(const string &mensahe)
 //checks wether the arg num is valid and does exist in real world
 bool natural_num(double& nn)
 {
-     if((isnormal(nn) == false) && (signbit(nn) == true))
+     if((isnormal(nn) == true) && (signbit(nn) == true))
          return false;
 
     return true;
@@ -105,10 +123,19 @@ bool is_digit(string& s)
 
 bool is_text(string& s)
 {
+   if(s.empty())        //whitespace encountered eg. \n, \f \v etc...
+   {
+     cin.setstate(std::ios_base::failbit);
+     return false;
+   }
+
    for(char& c : s)
    {
-        if(!isprint(c))         //either control char or newline
-            return false;
+        if(isprint(c) == 0)         //either control char or newline
+        {
+          cin.setstate(std::ios_base::failbit);
+          return false;
+        }
    }
    return true;         //printable characters
 }
