@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <new>     //using (nothrow) elements of ctor 
+#include <limits>
 #include "screen.h" //used by search_by function
 #include "archive.h"
 #include "menu.h"  //use by updt_book function to display update prompts
@@ -81,12 +82,12 @@ Book Archive::search(bool level)
 
     cout << "\t\tSearch a book\n";
     if((n = search_by(level)) < 0)
-        return head[0];
+        return head.front(); //did not find the book
 
     if(n == 0) 
-        return head[n];
+        return head[n]; //error returned
         
-    return head[n];
+    return head[n]; //successfully found the book
 }
 
 //|----------Prompting Admin to Update (stocks,price) interface---------------
@@ -96,8 +97,16 @@ void Archive::update(void)
     if(empty_archive() ==  false)
         return;
 
+    cout << "******************List of Books in the archive******************\n";
+    cout << "Index\tTitle\t\tStocks\tPrice\n";
+
+    for(size_t i = 1; i < head.size(); ++i)
+        cout << i << '\t' << head[i].get_title()  << "\t\t"
+                          << head[i].get_stocks() << "\t" 
+                          << head[i].get_price()  << '\n';
+
     cout << "\t\tUpdate Book\n";
-    n = static_cast<int> (Prompt::prompt("Entry number: "));
+    n = search_by(true);       
 
     exist = find_entry(n);  
     if(exist >= 1) //the entry is found 
@@ -195,10 +204,11 @@ int Archive::find_entry(int &n)
 }
 
 //|------------------ Searching String based queries --------------------
-int Archive::search_str(const int &c, bool &level)
+int Archive::search_str(const int &c, const bool &level)
 {
    cin.ignore();
    cin.clear();
+   CONSOLE::ClearScreen();
    string query = Prompt::get_str("Enter query: ");
 
    enum {TITLE = 1, AUTHOR, GENRE, ISBN};
@@ -223,7 +233,7 @@ int Archive::search_str(const int &c, bool &level)
                 break;
             case ISBN:
                 if(head[i].get_isbn().find(query) != string::npos)
-                    return i;
+                    results.push_back(i);
                 break;
             default:
                 cout << "Error command\n";
@@ -236,7 +246,7 @@ int Archive::search_str(const int &c, bool &level)
 }
 
 //------------------- Displaying all the result of query -------------
-int Archive::dsp_take(vector<int> &res, bool& level)
+int Archive::dsp_take(vector<int> &res, const bool& level)
 {
     if(res.empty())
     {
@@ -261,27 +271,29 @@ int Archive::dsp_take(vector<int> &res, bool& level)
     return out;
 }
 //------------------ Sorting through the nums ---------------------
-int Archive::search_price(bool &level)
+int Archive::search_price(const bool &level)
 {  
+
+    CONSOLE::ClearScreen();
     double min = 0, max = 0;
     while(min == 0 && max == 0)
     {
      Menu::price_menu();
-     enum {CHEAP = 1, BARGAIN, EXPENSIVE, RETURN};
+     enum {CHEAP = 1, BARGAIN, EXPENSIVE, RETURN = 0};
      int c = Prompt::get_cmd();
      switch(c)
      {
         case CHEAP:
-            min = 100;
-            max = 300;
+            min = std::numeric_limits<double>::min();
+            max = 350;
             break;
         case BARGAIN:
-            min = 400;
-            max = 600;
+            min = 350;
+            max = 650;
             break;
         case EXPENSIVE:
-            min = 600;
-            max = 10000;
+            min = 650;
+            max = std::numeric_limits<double>::max();      //largest possible value of that int can hold
             break;
         case RETURN:
             return 0;
@@ -292,19 +304,20 @@ int Archive::search_price(bool &level)
      CONSOLE::ClearScreen();
     }
 
-    vector<int> results {0};
+    vector<int> results {};
     for(size_t i = 1; i < head.size(); ++i)
     {
-        const double& pr = head[i].get_price();
-        if(pr >= min || pr <= max)
+        if(min <= head[i].get_price()|| max <= head[i].get_price())
+        {
             results.push_back(i);
+        }
     }
     int n = dsp_take(results, level); 
 
     return n;
 }
 //|-------------------- Searching Options -----------------------
-int Archive::search_by(bool& level)
+int Archive::search_by(const bool& level)
 {
    enum {CLOSE, TITLE, AUTHOR, GENRE, ISBN, PRICE, ENTRY_N}; 
    bool state = true;
@@ -338,6 +351,7 @@ int Archive::search_by(bool& level)
                 //will create a stack of recursive calls until entry is found
                 if((out = find_entry(n)) == -1)
                     out = exist(n);
+                cout << head[out];
                 return  out;
             case CLOSE:
                 return -1;

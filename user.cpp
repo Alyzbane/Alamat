@@ -72,10 +72,9 @@ void User::find(Archive& arch)
     {
         return; //cash is not enough
     }
-    //TO DO: record the recent bulk purchase of books
+    //TO DO: show the transaction after buying books 
 
     if(!arch.change(item, load)) return; //computing the remaining stocks
-    
     again = Menu::ask_opt("\n\t\tWould you like to buy again?");
     if(again == true)   //will recursively calls to buy a book
     {
@@ -118,7 +117,6 @@ int User::buy(Book& entry)
 
     total = price * qty;
     const double TAX = total * 0.10716;
-    const double VAT = total - TAX;
 
     //prompt for confirmation
     if(!(ask_opt("Do you wish to buy this book " + entry.get_title())))
@@ -126,7 +124,7 @@ int User::buy(Book& entry)
 
 
     //store the transactions
-    records.push_back({qty, price, change, TAX, VAT, total, 
+    records.push_back({qty, price, change, TAX, total, 
                        entry.get_title(), time_stamp()});
     user[name] = records; //record the name of user
 
@@ -194,17 +192,14 @@ ostream& operator <<(ostream& os, Receipt& rcpt)
 
     os << setw(TAB) << ' ' << std::string(HEADER + TAB + NOTES * 2, '-') << '\n';         //line br
 
-    os << setw(TAB) << ' ' << "Tax" << setw(NOTES) << ' ' 
+        //displaying the tax, total amt, change
+    os << setw(TAB) << ' ' << "TAX" << setw(NOTES) << ' ' 
        << setw(NOTES) << left << rcpt.tax
-       << setw(HEADER - TAB + 9) << ' ' << setw(PR) << "Cash" << setw(NOTES) << ' ' 
-       << setw(NOTES) << left << rcpt.cash << '\n';
+       << setw(HEADER - TAB + 9) << ' ' << setw(PR) << "Total Amount" << setw(NOTES) << ' ' 
+       << setw(NOTES) << left << rcpt.total << '\n';
 
-    os << setw(TAB)   << ' ' << "VAT"  << setw(NOTES) << ' ' 
-       << setw(NOTES) << rcpt.VAT
-       << setw(HEADER - TAB + NOTES * 2)    << ' ' << setw(PR) << "Change" << setw(NOTES) << ' ' 
-       << setw(NOTES) << left << "100" << '\n'
-       << setw(HEADER + TAB)  << ' ' << "Total Amount" 
-       << setw(NOTES) << ' ' << setw(PR) << left << rcpt.total << '\n';
+    os << setw(HEADER + TAB)  << ' ' << "Change" 
+       << setw(NOTES) << ' ' << setw(PR) << left << rcpt.cash << '\n';
 
 
 

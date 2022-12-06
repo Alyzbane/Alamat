@@ -13,8 +13,7 @@ namespace Consumer { //start of consumer namespace
     int qty;
     double price;
     double cash;
-    double tax;  
-    double VAT;    //original price of the book
+    double tax;     //original price of the book
     double total;
     std::string title;
     std::string time; 
