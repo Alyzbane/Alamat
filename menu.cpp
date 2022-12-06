@@ -11,12 +11,11 @@ using std::cin;
 using std::vector;
 using Tome::Book;
 using Hook::Admin;
-using namespace CONSOLE;
 
+using namespace CONSOLE;
 
 namespace Menu //start of menu namespace
 { 
-
 //|---------------Main Interface--------------
 void main_menu(void)
 {
@@ -112,7 +111,7 @@ void search_menu(void)
                 "\t| 3\t - genre\t\t\t\t|\n"
                 "\t| 4\t - isbn\t\t\t\t\t|\n"
                 "\t| 5\t - price\t\t\t\t|\n"
-                "\t| 6\t - entry number\t\t\t|\n"
+                "\t| 6\t - entry number\t\t\t\t|\n"
                 "\t| 0\t - close\t\t\t\t|\n"
                 "\t================================================="
                 << endl;
@@ -121,12 +120,12 @@ void search_menu(void)
 //|----------- USED FOR PRICE RANGE SEARCHING OPTION----------------
 void price_menu(void)
 {
-    cout << "\n\n--Price Category / Range--\n";
-      cout << "\nWhat would you like to update?\n" << endl;
+    cout << "\n\n-- Price Category --\n";
+      cout << "\n Range \n" << endl;
         cout << "\t=================================================\n"
-                "\t 1\t - cheap (100 -  300)\n"
-                "\t 2\t - bargain (400 - 600)\n"
-                "\t 3\t - expensive (600+)\n"
+                "\t 1\t - below 350\n"
+                "\t 2\t - 350 - 650\n"
+                "\t 3\t - 650+\n"
                 "\t 0\t - back\n"
                 "\t=================================================\n";
 }
@@ -296,6 +295,7 @@ void update_book (int& goods, double& cost)
             case 1:
                 goods = Prompt::prompt("\nUpdating stocks: ");
                 cost = Prompt::prompt("\nUpdating cost: ");
+                //are you sure you want to update
                 return;
             case 2:
                 goods = Prompt::prompt("\nUpdating stocks: ");

@@ -2,13 +2,14 @@
 #include "screen.h"
 #include "prompt.h"
 
+namespace CONSOLE {         //start of console namespace
+
 #if defined (WIN32) || defined(_WIN32) || defined(__NT__) || defined(_WIN64)
 #include <windows.h>
 #include <tchar.h>
 
 using namespace std;
 
-namespace CONSOLE {         //start of console namespace
 
 void ClearScreen(void)
 { 
@@ -66,6 +67,7 @@ string mask_pass(void)
 
 #elif (__LINUX__) || (__linux__) //linux
 #include <stdio.h>
+#include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
 
@@ -95,7 +97,7 @@ void press_key(string msg)
 {
     cin.ignore();
     cout << msg << endl;
-    char *c;
+    char *c = (char *) malloc(2);
     scanf("%c", c);
 }
 
@@ -104,6 +106,31 @@ void ClearScreen(void)
 {
   for(int i = 0; i < 50; i++)
     std::cout << "\n\n\n\n\n";
+}
+string hide_pass(void)
+    //will output password: ********
+{
+    system("MaskEcho.bat");
+
+    ifstream fass {".tmp.txt"};
+    string pwd;
+    if(!(getline(fass, pwd)))
+        Prompt::error("Database is corrupted...\n");
+
+    ofstream del {".dl.bat", ofstream::app};
+    del << "del .tmp.txt & del .txt";
+    del.close();
+    system(".dl.bat");
+
+    return pwd;
+}
+
+void press_key(string msg) 
+    //console echo will be off
+{
+    cin.ignore();
+    cout << msg << endl;
+    string ss = hide_pass();
 }
 
 #endif

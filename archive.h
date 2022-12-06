@@ -14,11 +14,11 @@ class Archive
         Tome::Book info;
         std::string fpath;
         int find_entry(int &n); 
-        int search_by(bool &level);
+        int search_by(const bool &level);
         int exist(int& n);
-        int search_str(const int &c, bool &level);
-        int search_price(bool &level);
-        int dsp_take(std::vector<int> &res, bool &level); 
+        int search_str(const int &c, const bool &level);
+        int search_price(const bool &level);
+        int dsp_take(std::vector<int> &res, const bool &level); 
 
     public:
         //non modifying 
