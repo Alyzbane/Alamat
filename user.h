@@ -19,15 +19,16 @@ namespace Consumer { //start of consumer namespace
     std::string time; 
  };
 
- class User 
- {
+class User 
+{
+
     private:
       std::unordered_map<std::string, std::vector<Receipt> > user;
       std::vector<Receipt> records;
       std::string name;
       double cash;
       int buy(Tome::Book& entry);        //archive here to store values
-      bool ismap_filled(const std::string& msg, std::unordered_map
+      bool ismap_filled(const std::string& search, const std::string& msg, std::unordered_map
                              <std::string, std::vector<Receipt> >::iterator& eu);
     public:
         //modifying functions
@@ -37,16 +38,20 @@ namespace Consumer { //start of consumer namespace
 
         //non modifying functions
         void get_cash(void);
-        void user_history(void);
+        void user_history(const std::string& msg = "Transaction History");
 //TO DO:        void all_history(void);
-        void recent(void);
+        void recent(const std::string& msg = "Last Transaction(s)");
+        void show_logs(void);
 
- };     
+
+};     
 
 //overload operators
 std::ostream& operator <<(std::ostream& os, Receipt& rcpt);
-std::string time_stamp(void);
+std::ostream& operator <<(std::ostream& os, 
+           const std::unordered_map<std::string, std::vector<Consumer::Receipt> >& usr);
 
+std::string time_stamp(void);
 
 } //end of Consumer namespace
 

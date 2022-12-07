@@ -15,10 +15,11 @@ class Archive
         std::string fpath;
         int find_entry(int &n); 
         int search_by(const bool &level);
-        int exist(int& n);
+        int exist(void);
         int search_str(const int &c, const bool &level);
         int search_price(const bool &level);
-        int dsp_take(std::vector<int> &res, const bool &level); 
+        int get_entry(void);
+        int dsp_take(const std::vector<int> &res, const bool &level); 
 
     public:
         //non modifying 

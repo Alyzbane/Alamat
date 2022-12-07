@@ -96,7 +96,7 @@ void skip_to_input(const string &mensahe, const int& opt)
             cin.unget(); //give back the input 
             return; //use it
         }
-        cout << "Invalid input: " << ch << '\n';
+        cout << "Invalid input " << ch << '\n';
         cout << mensahe;
     }
     error("No input\n");
@@ -139,4 +139,5 @@ bool is_text(string& s)
    }
    return true;         //printable characters
 }
+
 } //end of prompt
