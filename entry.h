@@ -45,6 +45,7 @@ class Book
 };
 
 std::vector<std::string> split(const std::string& text, const std::string& delims);
+void even_spaces(std::size_t start, const std::size_t& end = 20);
 
 }         //end of Tome namespace
 #endif

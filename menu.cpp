@@ -11,12 +11,11 @@ using std::cin;
 using std::vector;
 using Tome::Book;
 using Hook::Admin;
-using namespace CONSOLE;
 
+using namespace CONSOLE;
 
 namespace Menu //start of menu namespace
 { 
-
 //|---------------Main Interface--------------
 void main_menu(void)
 {
@@ -38,7 +37,7 @@ void admin_menu(void)
     cout << "\n\n--Admin--\n";
      cout << "\nWhat would you like to do? " << endl;
         cout << "\t=================================================\n"
-                "\t| 1\t - show all of the books in archive\t|\n"
+                "\t| 1\t - show all books\t\t|\n"
                 "\t| 2\t - search a book\t\t\t|\n"
                 "\t| 3\t - insert books into archive \t\t|\n"
                 "\t| 4\t - update books in archive\t\t|\n"
@@ -90,9 +89,9 @@ void exit_menu(void)
 };
 
 //|-------------User Interface---------------------------
-void buy_menu(string msg)
+void buy_menu(const string& head, const string& msg)
 {
-    cout << "\n\n--Buying--\n ";
+    cout << "\n\n--" << head << "--\n ";
       cout << msg << endl;
         cout << "\t=================================================\n"
                 "\t 1\t - YES\n"
@@ -112,7 +111,7 @@ void search_menu(void)
                 "\t| 3\t - genre\t\t\t\t|\n"
                 "\t| 4\t - isbn\t\t\t\t\t|\n"
                 "\t| 5\t - price\t\t\t\t|\n"
-                "\t| 6\t - entry number\t\t\t|\n"
+                "\t| 6\t - entry number\t\t\t\t|\n"
                 "\t| 0\t - close\t\t\t\t|\n"
                 "\t================================================="
                 << endl;
@@ -121,12 +120,12 @@ void search_menu(void)
 //|----------- USED FOR PRICE RANGE SEARCHING OPTION----------------
 void price_menu(void)
 {
-    cout << "\n\n--Price Category / Range--\n";
-      cout << "\nWhat would you like to update?\n" << endl;
+    cout << "\n\n-- Price Category --\n";
+      cout << "\n Range \n" << endl;
         cout << "\t=================================================\n"
-                "\t 1\t - cheap (100 -  300)\n"
-                "\t 2\t - bargain (400 - 600)\n"
-                "\t 3\t - expensive (600+)\n"
+                "\t 1\t - below 350\n"
+                "\t 2\t - 350 - 650\n"
+                "\t 3\t - 650+\n"
                 "\t 0\t - back\n"
                 "\t=================================================\n";
 }
@@ -203,18 +202,23 @@ void show_user(Archive& book, User& buyer, bool& state, bool& close)
         switch(cmd)
         {
             case SEARCH:
+               ClearScreen();
                recent = book.search();  
                break;
             case BUY:
-               buyer.find(book);
-               break; 
+              ClearScreen();
+              buyer.find(book);
+              break; 
             case SHOW:
+               ClearScreen();
                book.show(); //papakita lahat ng mga librong nakalagay
                break;
             case RECENT:
+               ClearScreen();
                buyer.recent();
                break;
             case HISTORY:
+               ClearScreen();
                buyer.user_history();
                break;
             case RETURN:
@@ -252,20 +256,25 @@ void show_admin(Archive& book, User& buyer, bool& state, bool& close)
         switch(cmd)
         {
             case SEARCH:
-                recent = book.search(); 
-                break;
+               ClearScreen();
+               recent = book.search(); 
+               break;
             case INSERT:
-                book.insertArch();
-                break;
+               ClearScreen();
+               book.insertArch();
+               break;
             case UPDATE:
-                book.update();
-                break;
+               ClearScreen();
+               book.update();
+               break;
             case SHOW:
-                book.show();
-                break;
+               ClearScreen();
+               book.show();
+               break;
             case HISTORY:
-//                buyer.user_history();
-                break;
+               ClearScreen();
+               buyer.show_logs();
+               break;
             case RETURN:
                state = true;
                return;
@@ -283,34 +292,59 @@ void show_admin(Archive& book, User& buyer, bool& state, bool& close)
     }
 }
 //|--------------Update Price & Stocks of Specified Archive-----------
-void update_book (int& goods, double& cost)
+//TO DO: add confirmation to update it
+void update_book (int& goods, double& cost, const string& title)
 {
+    enum {RETURN, BOTH, STOCKS_ONLY, PRICE_ONLY};
     int c;
     bool state = true;
-    while(state)
+    int stocks, price;
+    while(state != false)
     {  
         update_menu(); //show menu again
         c = Prompt::get_cmd();
         switch(c)
         {
-            case 1:
-                goods = Prompt::prompt("\nUpdating stocks: ");
-                cost = Prompt::prompt("\nUpdating cost: ");
+            case BOTH:
+                stocks = Prompt::prompt("\nUpdating stocks: ");
+                price = Prompt::prompt("\nUpdating price: ");
+                state = false;
+                break;
+            case STOCKS_ONLY:
+                stocks = Prompt::prompt("\nUpdating stocks: ");
+                state = false;
+                break;
+            case PRICE_ONLY:
+                price = Prompt::prompt("\nUpdating price: ");
+                state = false;
+                break;
+            case RETURN:
+                cout << "Returning...\n";
                 return;
-            case 2:
-                goods = Prompt::prompt("\nUpdating stocks: ");
-                return;
-            case 3:
-                cost = Prompt::prompt("\nUpdating cost: ");
-                return;
-            case 0:
-                return;
+                break;
             default:
                 cout << "\nIllegal command\n";
                 update_menu();
                 break;
         }
+        CONSOLE::press_key();
+        CONSOLE::ClearScreen();
     }
+    if(!ask_opt("Updating", 
+                "Would you like to update this book " + title))
+        return;         //did not wish to update
+
+    if(c == BOTH)
+        //checking what opt did the admin picked
+    {
+        goods = stocks;
+        cost = price;
+       return;
+    }
+    else if(c == STOCKS_ONLY && c != PRICE_ONLY)
+        goods = stocks;
+    else
+        cost = price;
 }
 
 
@@ -344,24 +378,20 @@ void show_exit(bool& state, bool& close)
    }
 }
 //|------------------- User Buying Interface ------------------
-bool ask_opt(const string& note)
+bool ask_opt(const string& title, const string& note)
 {
-    bool ans = false; 
-    bool exit = false;
     int cmd;
-
     enum{YES = 1, NO};
     
     ClearScreen();
-    while(!exit)
+    while(true)
     {
-        buy_menu(note);
+        buy_menu(title, note);
         cmd = Prompt::prompt("--> ");
         switch(cmd)
         {
          case YES:
-             ans =  true;
-             exit = true;
+             return true;
              break;
          case NO:
              return false; 
@@ -374,7 +404,7 @@ bool ask_opt(const string& note)
     ClearScreen();
     }
 
-    return ans;
+    return true;
 }
 
 } //end of Menu namespace
