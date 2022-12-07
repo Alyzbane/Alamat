@@ -6,6 +6,7 @@
 #include "user.h"
 #include "prompt.h"
 #include "menu.h"
+#include "screen.h"
        
 using namespace std;
 using namespace Tome;
@@ -75,7 +76,8 @@ void User::find(Archive& arch)
     //TO DO: show the transaction after buying books 
 
     if(!arch.change(item, load)) return; //computing the remaining stocks
-    again = Menu::ask_opt("\n\t\tWould you like to buy again?");
+    again = Menu::ask_opt("Buying",
+                  "\n\t\tWould you like to buy again?");
     if(again == true)   //will recursively calls to buy a book
     {
         find(arch); 
@@ -84,6 +86,7 @@ void User::find(Archive& arch)
 }
 
 //$-$--$----------------- BUYING --------------------$-$--$
+// return the qty bought to be computed in find() function
 int User::buy(Book& entry)
 {
     //store lahat ng bibilhin na libro
@@ -93,12 +96,11 @@ int User::buy(Book& entry)
     double price = entry.get_price();
 
     cout << setw(TAB) << "Your cash: " << cash << endl;
-
     qty  =  Prompt::prompt("\t\tHow many? ");
-    while(!(entry.min_stocks(qty)))
+    while(!entry.min_stocks(qty)) //using a temporary book data
     {
-        qty = Prompt::prompt("\t\tHow many? ");
-        if(qty == 0) return -1;         //out of stocks
+        qty  =  Prompt::prompt("\t\tHow many? ");
+        if(qty == 0) return -1;         //out of stocks || exiting
     }
 
     change = cash;
@@ -119,7 +121,8 @@ int User::buy(Book& entry)
     const double TAX = total * 0.10716;
 
     //prompt for confirmation
-    if(!(ask_opt("Do you wish to buy this book " + entry.get_title())))
+    if(!(ask_opt("Buying", 
+                  "Do you wish to buy this book " + entry.get_title())))
         return -1; //did not buy the book
 
 
@@ -133,32 +136,55 @@ int User::buy(Book& entry)
 
     cash = change;         //remaining cash
 
-    cout << setw(TAB) << "Thank you for buying!...\n";
+    CONSOLE::ClearScreen();
+    recent("Maraming salamat sa pagbili sa Alamat");
+    CONSOLE::press_key();
+
     return qty; // used for computing the archive stocks
 }
 //|--------------------- PRINT ALL OF THE RECORDED PURCHASES -----------------
-void User::user_history(void)
+void User::user_history(const string& msg)
 {
-    cout << "\n\t\t----------------------- History of Transactions ------------------------------\n\n";
+    cout << "\n\t\t-----------------------" << msg
+         << "------------------------------\n\n";
     unordered_map<string, vector<Receipt> >::iterator got;
 
-    if((ismap_filled("It's like space...\n", got)) == false)
+    if((ismap_filled(name, "It's like space...\n", got)) == false)
         return;
     
     //printing all of the user purchases
         for(auto& vals : got->second)
             cout << vals << endl;
 }
+void User::show_logs(void)
+{
+    if(user.empty())
+    {
+        cout << "Empty log...\n";
+        return;
+    }
+    cout << "Showing all of the transaction logs...";
+    cout << user;
 
+    string query = Prompt::get_str("Pick a name: "); 
+    unordered_map<string, vector<Receipt> >::iterator datas;
+    if(!ismap_filled(query, "User does not exist\n" , datas))
+        return;
+
+    for(auto& it : datas->second)
+        cout << it;
+}
 //TO DO SHow history of users transactions to admin
 
 //|------------------------ RECENT PURCHASE -----------------------
-void User::recent(void)
+void User::recent(const string& msg)
 {
-    cout << "\n\t\t----------------------- Last Transaction(s) ------------------------------\n\n";
+    cout << "\n\t\t-----------------------" 
+         << msg
+         << "------------------------------\n\n";
     unordered_map<string, vector<Receipt> >::iterator last;
 
-    if((ismap_filled("Nothing to do here...\n", last)) == false)
+    if((ismap_filled(name, "Nothing to do here...\n", last)) == false)
         return; //will only print the recent purchase not bulk
 
     //TO DO: print all same timespans of purchases
@@ -201,15 +227,31 @@ ostream& operator <<(ostream& os, Receipt& rcpt)
     os << setw(HEADER + TAB)  << ' ' << "Change" 
        << setw(NOTES) << ' ' << setw(PR) << left << rcpt.cash << '\n';
 
-
-
     return os;
-
 }
 
-bool User::ismap_filled(const string& msg, unordered_map
-                        <string, vector<Receipt> >::iterator& eu)
-//find user existing transaction history
+ostream& operator <<(ostream& os, const unordered_map<string, vector<Receipt> >& usr)
+    //printing the map values to be shown in admin interface
+{
+    vector<int> counts {};
+    os << "Name\t\t" << "Books bought\n";
+    for(auto& name : usr)
+    {
+        int n = 0;
+        os << name.first; 
+        even_spaces(name.first.length() + 1);
+        for(auto &it : name.second)
+            n += it.qty;
+        os << n << '\n';
+    }
+    os << "There are total of " <<  usr.size() << " customers\n";
+    return os;
+}
+
+bool User::ismap_filled(const std::string& search, 
+                        const std::string& msg, std::unordered_map
+                        <std::string, std::vector<Receipt> >::iterator& eu)
+ //find user existing transaction history
 {
     if((user.empty()))
     {
@@ -217,10 +259,10 @@ bool User::ismap_filled(const string& msg, unordered_map
         return false;     //empty records
     }
 
-    eu = user.find(name);
+    eu = user.find(search);
     if(eu == user.end())
     {
-        cout << "\t\t" <<  name << " have not made any purchases\n";
+        cout << "\t\t" <<  search << " have not made any purchases\n";
         return false; //user ay walang records of transactions
     }
     return true;     //not empty && contains history of records

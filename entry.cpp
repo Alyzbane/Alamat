@@ -5,6 +5,7 @@
 #include "entry.h"
 #include "prompt.h"
 #include "menu.h"
+#include "screen.h"
 
 using namespace std;
 using Prompt::natural_num;
@@ -34,22 +35,22 @@ ostream& operator <<(ostream& ost, const Book& b)
 {
     
     //printing all books in the archives
-        ost << "-> ["      << b.number << "]" 
-             << " Title:  "  << b.title << "\n "
-             << " \tAuthor: " << b.author << "\n ";
-        ost << " \tGenres: "; 
+    ost << '\t' << "Entry No.\t\n";
+    ost << " -> ["        << b.number << "] " 
+        << "Title:  "   << b.title << "\n "
+        << " \tAuthor: " << b.author << "\n ";
+    ost << " \tGenres: "; 
 
    //for each  word found in the genre
-     for(auto w = b.genres.begin(); w != b.genres.end(); ++w)
+     for(size_t w = 1; w < b.genres.size(); ++w)
      {
-         ost << *w << ", ";
-         if(next(w) == b.genres.end())
+         ost << b.genres[w] << ", ";
+         if(w++ == b.genres.size())
          {
-             ost << *w;
+             ost << b.genres[w];
              break;
          }
      }
-
         ost << "\n \tISBN:   "    << b.isbn << "\n "
              << " \tStocks: "     << b.stocks << "\n " 
              << fixed             << setprecision(2)
@@ -103,7 +104,8 @@ void Book::insert(const int n)
 // args passed will be change by reference
 void Book::revise(void)
 {
-    Menu::update_book(stocks, price);
+    cout << "Changing the book data of " + title << "\n";
+    Menu::update_book(stocks, price, title);
 }
 
 // arg passed is by user found in computation function
@@ -179,6 +181,11 @@ vector<string> split(const string& text, const string& delims)
      tokens.push_back(text.substr(start));
 
     return tokens;
+}
+void even_spaces(size_t start, const size_t& end)
+{
+    while(start-- < end)
+        cout.put(' ');
 }
 
 }
