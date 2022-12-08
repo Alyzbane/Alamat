@@ -58,11 +58,18 @@ void Archive::insertArch(void)
     //existing entry number
     if(find_entry(entry_n) >= 0)
     {
-        cout << "Entry number already exist\n";
+        cout << "Error: Entry number already exist...\n";
         return;
     }
 
     info.insert(entry_n);
+
+    if(find_isbn(info.get_isbn()) >= 0)
+    {
+        cout << "Error: ISBN already exist returning...\n";
+        info.clear();
+        return;
+    }
     //load new entry in archive
     head.push_back({info});
 
@@ -117,7 +124,7 @@ void Archive::show(void)
         return;
    
    //printing all books in the archives
-    cout << "Archives:\n";
+    cout << "Books in Alamat Archives:\n";
     for(size_t i = 1; i < head.size(); i++)
          cout << head[i];
 }
@@ -181,6 +188,17 @@ int Archive::find_entry(int &n)
     for(size_t i = 0;  i < head.size(); ++i)
     {
         if(head[i].get_no() == n)
+            return i;  //retrning the index of n
+    }
+
+    return -1; //either 0 or valid entry number
+}
+
+int Archive::find_isbn(const string &que)
+{
+    for(size_t i = 0;  i < head.size(); ++i)
+    {
+        if(head[i].get_isbn() == que)
             return i;  //retrning the index of n
     }
 
@@ -319,6 +337,7 @@ int Archive::search_by(const bool& level)
    {
        Menu::search_menu(); 
        c = Prompt::get_cmd();
+       CONSOLE::ClearScreen();
        switch(c)
        {
             case TITLE:
@@ -351,7 +370,6 @@ int Archive::search_by(const bool& level)
                 cout << "\nIllegal command\n";
                 break;
        }
-       CONSOLE::ClearScreen();
        CONSOLE::press_key();
    }
    cout << "Cannot find the query in the archive\n";
@@ -372,3 +390,4 @@ int Archive::get_entry(void)
     cout << head[res] << endl;
     return res;
 }
+

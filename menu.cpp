@@ -37,7 +37,7 @@ void admin_menu(void)
     cout << "\n\n--Admin--\n";
      cout << "\nWhat would you like to do? " << endl;
         cout << "\t=================================================\n"
-                "\t| 1\t - show all books\t\t|\n"
+                "\t| 1\t - show all books\t\t\t|\n"
                 "\t| 2\t - search a book\t\t\t|\n"
                 "\t| 3\t - insert books into archive \t\t|\n"
                 "\t| 4\t - update books in archive\t\t|\n"

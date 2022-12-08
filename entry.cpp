@@ -20,6 +20,7 @@ Book::Book(void)
     number = 0;
     stocks = 0;
     price = 0.00;
+    genres = {};
 }
 //|------Ctor user initialized arguments----------------
 Book::Book(int n, int s, double p, string au,
@@ -35,9 +36,9 @@ ostream& operator <<(ostream& ost, const Book& b)
 {
     
     //printing all books in the archives
-    ost << '\t' << "Entry No.\t\n";
-    ost << " -> ["        << b.number << "] " 
-        << "Title:  "   << b.title << "\n "
+    ost << "\tEntry No."
+        << " -> ["        << b.number << "]\n" 
+        << "\tTitle:  "   << b.title << "\n "
         << " \tAuthor: " << b.author << "\n ";
     ost << " \tGenres: "; 
 
@@ -182,6 +183,17 @@ vector<string> split(const string& text, const string& delims)
 
     return tokens;
 }
+void Book::clear(void)
+{
+    number ^= number;
+    stocks ^= stocks;
+    price = {};
+    author.clear();
+    title.clear();
+    isbn.clear();
+    genres.clear();
+}
+
 void even_spaces(size_t start, const size_t& end)
 {
     while(start-- < end)

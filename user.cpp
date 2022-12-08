@@ -32,7 +32,7 @@ bool User::wallet(void)
 
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt - 5);
-        name = Prompt::get_str("Username: "); 
+         name = Prompt::get_str("Username: ");  //will skip the ws
 
     cout << setw(indent + extra_indt) << ' ' << 
          setw(indent / extra_indt - 5) <<
@@ -66,7 +66,8 @@ void User::find(Archive& arch)
         return;
 
     //printing the book information
-    //bug here
+    CONSOLE::ClearScreen();
+    cout << item;
     load = buy(item);
 
     if(load == 0 || load == -1)
@@ -145,13 +146,15 @@ int User::buy(Book& entry)
 //|--------------------- PRINT ALL OF THE RECORDED PURCHASES -----------------
 void User::user_history(const string& msg)
 {
-    cout << "\n\t\t-----------------------" << msg
-         << "------------------------------\n\n";
     unordered_map<string, vector<Receipt> >::iterator got;
 
-    if((ismap_filled(name, "It's like space...\n", got)) == false)
+    if((ismap_filled(name, "Nothing to do here...\n", got)) == false)
         return;
-    
+
+    cout << "Customer Name: " << name << '\n';
+    cout << "\n\t\t-----------------------" << msg
+         << "------------------------------\n\n";
+   
     //printing all of the user purchases
         for(auto& vals : got->second)
             cout << vals << endl;
@@ -163,7 +166,7 @@ void User::show_logs(void)
         cout << "Empty log...\n";
         return;
     }
-    cout << "Showing all of the transaction logs...";
+    cout << "Showing all of the transaction logs...\n";
     cout << user;
 
     string query = Prompt::get_str("Pick a name: "); 
@@ -179,13 +182,16 @@ void User::show_logs(void)
 //|------------------------ RECENT PURCHASE -----------------------
 void User::recent(const string& msg)
 {
-    cout << "\n\t\t-----------------------" 
-         << msg
-         << "------------------------------\n\n";
     unordered_map<string, vector<Receipt> >::iterator last;
 
     if((ismap_filled(name, "Nothing to do here...\n", last)) == false)
         return; //will only print the recent purchase not bulk
+
+
+    cout << "Customer Name: " << name << '\n';
+    cout << "\n\t\t-----------------------" 
+         << msg
+         << "------------------------------\n\n";
 
     //TO DO: print all same timespans of purchases
     //will only print the recent purchase not bulk
@@ -204,29 +210,39 @@ void User::get_cash(void)
 ostream& operator <<(ostream& os, Receipt& rcpt)
 {
     enum {TAB = 16, NOTES = 4, HALF = 30, PR = 6, HEADER = 60};
+
+    //will copy the default state of ostream
+    ios state(NULL);
+    state.copyfmt(cout);
+
     os << setw(TAB) << ' ' << "Date of Transaction" 
        << setw(HEADER - TAB) << ' ' << rcpt.time << '\n';
 
     os << setw(TAB) << ' ' << std::string(HEADER + TAB + NOTES * 2, '-') << '\n';         //line br
 
+    os.copyfmt(ios(NULL));      //reverting to default ostr state
     os  << setw(TAB) << ' ' << "Qty" << setw(HALF) << ' ' << "Title"         //title
         << setw(HEADER - HALF + 5) << ' ' << "Price\n\n";
 
     os  << setw(TAB - 2) << ' ' << setw(NOTES) << rcpt.qty 
         << setw(HALF - PR - 2) << ' ' << setw(TAB) << rcpt.title    //title contents
         << setw(HEADER - HALF - NOTES) << ' ' << setw(PR) << left << rcpt.price  << '\n';
-
     os << setw(TAB) << ' ' << std::string(HEADER + TAB + NOTES * 2, '-') << '\n';         //line br
 
         //displaying the tax, total amt, change
+
+    os.copyfmt(ios(NULL));
     os << setw(TAB) << ' ' << "TAX" << setw(NOTES) << ' ' 
        << setw(NOTES) << left << rcpt.tax
-       << setw(HEADER - TAB + 9) << ' ' << setw(PR) << "Total Amount" << setw(NOTES) << ' ' 
+       << setw(HEADER - TAB + 9) << ' ' << setw(PR) 
+       << "Total Amount" << setw(NOTES) << ' ' 
        << setw(NOTES) << left << rcpt.total << '\n';
 
-    os << setw(HEADER + TAB)  << ' ' << "Change" 
-       << setw(NOTES) << ' ' << setw(PR) << left << rcpt.cash << '\n';
+    os << setw(HEADER + TAB + NOTES + 3)  << ' ' << "Change" 
+       << setw(NOTES) << ' ' << setw(PR) << left << setprecision(4)
+       << rcpt.cash  << '\n';
 
+    os.copyfmt(state);
     return os;
 }
 
@@ -242,9 +258,10 @@ ostream& operator <<(ostream& os, const unordered_map<string, vector<Receipt> >&
         even_spaces(name.first.length() + 1);
         for(auto &it : name.second)
             n += it.qty;
-        os << n << '\n';
+        os << "\t\t" << n << '\n';
     }
-    os << "There are total of " <<  usr.size() << " customers\n";
+    os << std::string(100, '-');
+    os << "\n\nThere are total of " <<  usr.size() << " customers\n";
     return os;
 }
 
