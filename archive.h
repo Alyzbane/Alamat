@@ -14,6 +14,7 @@ class Archive
         Tome::Book info;
         std::string fpath;
         int find_entry(int &n); 
+        int find_isbn(const std::string &que);
         int search_by(const bool &level);
         int exist(void);
         int search_str(const int &c, const bool &level);

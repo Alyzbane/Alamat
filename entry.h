@@ -22,7 +22,6 @@ class Book
         std::string isbn;
         std::vector<std::string> genres;
 
-
     public:
         //Ctor 
         Book(int n, int s, double p,std::string au,
@@ -41,7 +40,7 @@ class Book
         std::string get_isbn(void) const;
         std::string get_author(void) const;
         bool category(std::string &s);
-
+        void clear(void);
 };
 
 std::vector<std::string> split(const std::string& text, const std::string& delims);
