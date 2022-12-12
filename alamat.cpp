@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stdexcept>
+#include "screen.h"
 #include "prompt.h"
 #include "archive.h"
 #include "menu.h"
@@ -16,6 +16,7 @@ using Tome::Book;
 
 int main(void)
 {
+    CONSOLE::welcome_screen();
     Archive book; 
     User buyer;
     bool state = true;  //user going back to the main menu interface

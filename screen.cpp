@@ -1,4 +1,6 @@
 #include <fstream>
+#include <iomanip>
+#include <cmath>
 #include "screen.h"
 #include "prompt.h"
 
@@ -64,6 +66,48 @@ string mask_pass(void)
 
     return pwd;
 }
+void welcome_screen(void)
+{
+    ClearScreen();
+
+    string f_st = R"-(                                                                                                                                               
+        ##      ###                                                           #######                                                          
+     /####       ###                                                        /       ###                                                        
+    /  ###        ##                                           #           /         ##                            #                           
+       /##        ##                                          ##           ##        #                            ##                           
+      /  ##       ##                                          ##            ###                                   ##                           
+      /  ##       ##      /###   ### /### /###     /###     ########       ## ###       ##   ####      /###     ######## /##  ### /### /###    
+     /    ##      ##     / ###  / ##/ ###/ /##  / / ###  / ########         ### ###      ##    ###  / / #### / ######## / ###  ##/ ###/ /##  / 
+     /    ##      ##    /   ###/   ##  ###/ ###/ /   ###/     ##              ### ###    ##     ###/ ##  ###/     ##   /   ###  ##  ###/ ###/  
+    /      ##     ##   ##    ##    ##   ##   ## ##    ##      ##                ### /##  ##      ## ####          ##  ##    ### ##   ##   ##   
+    /########     ##   ##    ##    ##   ##   ## ##    ##      ##                  #/ /## ##      ##   ###         ##  ########  ##   ##   ##   
+   /        ##    ##   ##    ##    ##   ##   ## ##    ##      ##                   #/ ## ##      ##     ###       ##  #######   ##   ##   ##   
+   #        ##    ##   ##    ##    ##   ##   ## ##    ##      ##                    # /  ##      ##       ###     ##  ##        ##   ##   ##   
+  /####      ##   ##   ##    /#    ##   ##   ## ##    /#      ##          /##        /   ##      ##  /###  ##     ##  ####    / ##   ##   ##   
+ /   ####    ## / ### / ####/ ##   ###  ###  ### ####/ ##     ##         /  ########/     ######### / #### /      ##   ######/  ###  ###  ###  
+/     ##      #/   ##/   ###   ##   ###  ###  ### ###   ##     ##       /     #####         #### ###   ###/        ##   #####    ###  ###  ### 
+#                                                                       |                         ###                                          
+ ##                                                                      \)                #####   ###                                         
+                                                                                         /#######  /#                                          
+                                                                                        /      ###/                                           )-";
+
+    short int indent = 50,
+              extra_indt = 5;
+
+    cout << setw(indent + extra_indt) << ' ' << 
+            setw(indent / extra_indt) <<
+            f_st << "\n\n";
+    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Danie D. Mampusti",
+                   "Kurt Vincent Magcawas", "Dhan Eldrin Mabilangan",
+                   "Franco Villamor", "\n\nPress enter to start..."};
+    for(const auto& i : s)
+        cout << '\n' << setw(indent + extra_indt) << ' '
+             << setw(indent / 2) << i << '\n';
+    cout.copyfmt(ios(NULL));
+    string key = hide_pass();
+
+    ClearScreen();
+}
 
 #elif (__LINUX__) || (__linux__) //linux
 #include <stdio.h>
@@ -100,7 +144,49 @@ void press_key(string msg)
     char *c = (char *) malloc(2);
     scanf("%c", c);
 }
+void welcome_screen(void)
+{
+    ClearScreen();
+    string f_st = R"-(                                                                                                                                               
+        ##      ###                                                           #######                                                          
+     /####       ###                                                        /       ###                                                        
+    /  ###        ##                                           #           /         ##                            #                           
+       /##        ##                                          ##           ##        #                            ##                           
+      /  ##       ##                                          ##            ###                                   ##                           
+      /  ##       ##      /###   ### /### /###     /###     ########       ## ###       ##   ####      /###     ######## /##  ### /### /###    
+     /    ##      ##     / ###  / ##/ ###/ /##  / / ###  / ########         ### ###      ##    ###  / / #### / ######## / ###  ##/ ###/ /##  / 
+     /    ##      ##    /   ###/   ##  ###/ ###/ /   ###/     ##              ### ###    ##     ###/ ##  ###/     ##   /   ###  ##  ###/ ###/  
+    /      ##     ##   ##    ##    ##   ##   ## ##    ##      ##                ### /##  ##      ## ####          ##  ##    ### ##   ##   ##   
+    /########     ##   ##    ##    ##   ##   ## ##    ##      ##                  #/ /## ##      ##   ###         ##  ########  ##   ##   ##   
+   /        ##    ##   ##    ##    ##   ##   ## ##    ##      ##                   #/ ## ##      ##     ###       ##  #######   ##   ##   ##   
+   #        ##    ##   ##    ##    ##   ##   ## ##    ##      ##                    # /  ##      ##       ###     ##  ##        ##   ##   ##   
+  /####      ##   ##   ##    /#    ##   ##   ## ##    /#      ##          /##        /   ##      ##  /###  ##     ##  ####    / ##   ##   ##   
+ /   ####    ## / ### / ####/ ##   ###  ###  ### ####/ ##     ##         /  ########/     ######### / #### /      ##   ######/  ###  ###  ###  
+/     ##      #/   ##/   ###   ##   ###  ###  ### ###   ##     ##       /     #####         #### ###   ###/        ##   #####    ###  ###  ### 
+#                                                                       |                         ###                                          
+ ##                                                                      \)                #####   ###                                         
+                                                                                         /#######  /#                                          
+                                                                                        /      ###/                                           )-";
 
+
+    const int w = 80;
+    short int indent = 50,
+              extra_indt = 5;
+
+    cout << setw(indent + extra_indt) << ' ' << 
+            setw(indent / extra_indt) <<
+            f_st << "\n\n";
+    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Danie D. Mampusti",
+                   "Kurt Vincent Magcawas", "Dhan Eldrin Mabilangan",
+                   "Franco Villamor", "\n\nPress enter to start..."};
+    for(const auto& i : s)
+        cout << '\n' << setw(indent + extra_indt) << ' '
+             << setw(indent / 2) << i << '\n';
+    cout.copyfmt(ios(NULL));
+    string key = hide_pass();
+
+    ClearScreen();
+}
 #else 
 void ClearScreen(void)
 {
@@ -131,6 +217,49 @@ void press_key(string msg)
     cin.ignore();
     cout << msg << endl;
     string ss = hide_pass();
+}
+
+void welcome_screen(void)
+{
+
+    ClearScreen();
+    string f_st = R"-(                                                                                                                                               
+        ##      ###                                                           #######                                                          
+     /####       ###                                                        /       ###                                                        
+    /  ###        ##                                           #           /         ##                            #                           
+       /##        ##                                          ##           ##        #                            ##                           
+      /  ##       ##                                          ##            ###                                   ##                           
+      /  ##       ##      /###   ### /### /###     /###     ########       ## ###       ##   ####      /###     ######## /##  ### /### /###    
+     /    ##      ##     / ###  / ##/ ###/ /##  / / ###  / ########         ### ###      ##    ###  / / #### / ######## / ###  ##/ ###/ /##  / 
+     /    ##      ##    /   ###/   ##  ###/ ###/ /   ###/     ##              ### ###    ##     ###/ ##  ###/     ##   /   ###  ##  ###/ ###/  
+    /      ##     ##   ##    ##    ##   ##   ## ##    ##      ##                ### /##  ##      ## ####          ##  ##    ### ##   ##   ##   
+    /########     ##   ##    ##    ##   ##   ## ##    ##      ##                  #/ /## ##      ##   ###         ##  ########  ##   ##   ##   
+   /        ##    ##   ##    ##    ##   ##   ## ##    ##      ##                   #/ ## ##      ##     ###       ##  #######   ##   ##   ##   
+   #        ##    ##   ##    ##    ##   ##   ## ##    ##      ##                    # /  ##      ##       ###     ##  ##        ##   ##   ##   
+  /####      ##   ##   ##    /#    ##   ##   ## ##    /#      ##          /##        /   ##      ##  /###  ##     ##  ####    / ##   ##   ##   
+ /   ####    ## / ### / ####/ ##   ###  ###  ### ####/ ##     ##         /  ########/     ######### / #### /      ##   ######/  ###  ###  ###  
+/     ##      #/   ##/   ###   ##   ###  ###  ### ###   ##     ##       /     #####         #### ###   ###/        ##   #####    ###  ###  ### 
+#                                                                       |                         ###                                          
+ ##                                                                      \)                #####   ###                                         
+                                                                                         /#######  /#                                          
+                                                                                        /      ###/                                           )-";
+
+    short int indent = 50,
+              extra_indt = 5;
+
+    cout << setw(indent + extra_indt) << ' ' << 
+            setw(indent / extra_indt) <<
+            f_st << "\n\n";
+    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Danie D. Mampusti",
+                   "Kurt Vincent Magcawas", "Dhan Eldrin Mabilangan",
+                   "Franco Villamor", "\n\nPress enter to start..."};
+    for(const auto& i : s)
+        cout << '\n' << setw(indent + extra_indt) << ' '
+             << setw(indent / 2) << i << '\n';
+    cout.copyfmt(ios(NULL));
+    string key = hide_pass();
+
+    ClearScreen();
 }
 
 #endif
