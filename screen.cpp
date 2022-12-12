@@ -1,6 +1,5 @@
 #include <fstream>
 #include <iomanip>
-#include <cmath>
 #include "screen.h"
 #include "prompt.h"
 
@@ -97,7 +96,7 @@ void welcome_screen(void)
     cout << setw(indent + extra_indt) << ' ' << 
             setw(indent / extra_indt) <<
             f_st << "\n\n";
-    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Danie D. Mampusti",
+    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Daniel D. Mampusti",
                    "Kurt Vincent Magcawas", "Dhan Eldrin Mabilangan",
                    "Franco Villamor", "\n\nPress enter to start..."};
     for(const auto& i : s)
@@ -176,7 +175,7 @@ void welcome_screen(void)
     cout << setw(indent + extra_indt) << ' ' << 
             setw(indent / extra_indt) <<
             f_st << "\n\n";
-    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Danie D. Mampusti",
+    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Daniel D. Mampusti",
                    "Kurt Vincent Magcawas", "Dhan Eldrin Mabilangan",
                    "Franco Villamor", "\n\nPress enter to start..."};
     for(const auto& i : s)
@@ -250,7 +249,7 @@ void welcome_screen(void)
     cout << setw(indent + extra_indt) << ' ' << 
             setw(indent / extra_indt) <<
             f_st << "\n\n";
-    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Danie D. Mampusti",
+    string s[6] = {"****ITECC04 FINAL PROJECT****", "Prince Daniel D. Mampusti",
                    "Kurt Vincent Magcawas", "Dhan Eldrin Mabilangan",
                    "Franco Villamor", "\n\nPress enter to start..."};
     for(const auto& i : s)
