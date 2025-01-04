@@ -1,51 +1,75 @@
-# mataas-na-grade-sure-na-to-99.9-
+# Alamat Inventory System
 
-<h2> Building from the source </h2>
-<p> Compile it using these make rules. Use the command prompt for windows or bash for linux or whatever you have </p>
-<code> make entry.o login.o screen.o user.o alamat </code>
+A lightweight C++ inventory management system designed for small-scale inventory tracking.
 
-<h2> How to Run </h2>
-<p>Type this in the command prompt</p>
+## Features
 
-<h3>Windows</h3>
-<code> alamat </code>
-<h3>Linux</h3>
-<code> .\alamat </code>
+**Core Functionality**:
+- User authentication and access control
+- Inventory item tracking and management
+- Archive system for historical records
+- Command-line interface with intuitive menu navigation
 
+**Technical Highlights**:
+- Built with modern C++ practices
+- File-based storage system
+- Password masking for secure input
+- Cross-platform compatibility (Windows/Cygwin)
 
-<h2> Help </h2>
-<p>If it returned some error during compilation. Remove the "-static-libstdc++" rule in the makefile...</p>
+## Building from Source
 
-Kulang pa dito ay: <br />
- <s>1. User/Admin interface</s>  
- <s> 1.1. back to first panel</s>
-  
- 2. search(func)
-   2.1. archive books are sorted sa kanilang catalog
-    <s>- author
-       - price
-       - isbn
-       - title </s>  
-       - price (min, high) <br />
-       
- 3. user()
-  <s>    3.1 show recent bought book
-    3.2 show history of transactions </s>  
-    
- 4. buying()<br/>
-    4.1 Discount / Promo / Voucher 
-    <s> 4.2 using the Func::seach() to sort the query </s>  
-   <b> Transactions History will not be sorted</b>
-    
- 5. resibo()
-    > redirect the information of picked book into a file
- <s>    > formatted using the buying()  </s>  
- 
-<br />Aayusin lang muna sa version na ito ay:  <br />
- 1. <s> mga class objects, yung sa main features eg. insert, search...
-    1.1 hihiwalay/organize nalang yung mga helper functions </s>  
- 2. <s> exception handling 
-    i.e. mga int at double error inputs pag may bagong enter na data </s>  
- 3. <s> struct or vector class sa paghahandle ng mga catalog </s> napili ay pointer to dynamically allocated arrays
- 4. Adding discount to the books </br>
- <strong>5. %1. messy code functions, lipat sa class or something</strong>
+**Prerequisites**:
+- C++ compiler (GCC/MinGW or MSVC)
+- Make or CMake build system
+
+**Compilation**:
+```bash
+# Using Make
+make
+
+# Using CMake
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
+## Usage
+
+After compilation, run the executable:
+```bash
+./alamat
+```
+
+The system will prompt for login credentials. Default admin credentials are provided in the documentation.
+
+**Limitations**:
+- Upon exiting the program, the data that was previously inserted will not be retrievable
+
+**Recommmendations**
+- Use external database like sqlite to store data
+
+## Project Structure
+
+```
+Alamat/
+├── src/
+│   ├── alamat.cpp      # Main entry point
+│   ├── archive.cpp     # Archive management
+│   ├── login.cpp       # Authentication system
+│   ├── menu.cpp        # Menu interface
+│   └── screen.cpp      # Display handling
+├── include/
+│   └── *.h            # Header files
+└── data/
+    └── *.dat          # Data storage files
+```
+
+## Contributing
+
+Feel free to submit issues and enhancement requests. Follow these steps to contribute:
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request

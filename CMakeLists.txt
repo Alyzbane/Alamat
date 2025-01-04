@@ -4,15 +4,18 @@ project(alamat)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Add include directory
+include_directories(include)
+
 add_executable(alamat
-    alamat.cpp
-    archive.cpp
-    prompt.cpp
-    menu.cpp
-    login.cpp
-    entry.cpp
-    user.cpp
-    screen.cpp
+    src/alamat.cpp
+    src/archive.cpp
+    src/prompt.cpp
+    src/menu.cpp
+    src/login.cpp
+    src/entry.cpp
+    src/user.cpp
+    src/screen.cpp
 )
 
 # Define platform-specific macros
@@ -22,5 +25,4 @@ elseif(UNIX AND NOT APPLE)
     target_compile_definitions(alamat PRIVATE __LINUX__)
 endif()
 
-# Link static libraries
 target_link_options(alamat PRIVATE -static-libgcc -static-libstdc++)
