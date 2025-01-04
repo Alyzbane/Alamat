@@ -1,4 +1,11 @@
-# Alamat Inventory System
+# Alamat
+
+<p align="center">
+  <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/98a0bcfc-ba20-41d8-8212-e0b9a0957496/diw7mag-0eca3aec-ebeb-4e6b-8dda-7429e13dbade.png/v1/fit/w_600,h_412,q_70,strp/project_alamat_by_xxxc2ginxxx_diw7mag-375w-2x.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NDEyIiwicGF0aCI6IlwvZlwvOThhMGJjZmMtYmEyMC00MWQ4LTgyMTItZTBiOWEwOTU3NDk2XC9kaXc3bWFnLTBlY2EzYWVjLWViZWItNGU2Yi04ZGRhLTc0MjllMTNkYmFkZS5wbmciLCJ3aWR0aCI6Ijw9NjAwIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.Df2jkGypjE8vP8ZVvfMCg6x6mv-Ef432a-CbYJN7c8Q" 
+      loading="eager"
+      alt="Sublime's custom image"
+      style="display: block; margin: 0 auto"/>
+</p>
 
 A lightweight C++ inventory management system designed for small-scale inventory tracking.
 
