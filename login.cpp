@@ -94,7 +94,7 @@ bool Admin::find_user(void)
     bool state = false;
     map<string, string> users;
 
-    inf.open("acc.dat");
+    inf.open("accounts.dat");
 
     //reading the file
     if(!inf) Prompt::error("Error 098: user is data corrupted");

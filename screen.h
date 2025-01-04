@@ -19,14 +19,6 @@ void press_key(std::string msg =  "Press the enter key to continue...");
 std::string hide_pass(void);
 void welcome_screen(void);
 
-#else 
-void ClearScreen(void);
-void press_key(std::string msg =  "Press the enter key to continue...");
-std::string hide_pass(void);
-void welcome_screen(void);
-
-
 #endif
-
 #endif
 }
