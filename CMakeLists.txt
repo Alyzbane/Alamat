@@ -3,6 +3,7 @@ project(alamat)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 
 # Add include directory
 include_directories(include)
@@ -25,4 +26,4 @@ elseif(UNIX AND NOT APPLE)
     target_compile_definitions(alamat PRIVATE __LINUX__)
 endif()
 
-target_link_options(alamat PRIVATE -static-libgcc -static-libstdc++)
+target_link_options(alamat PRIVATE -static)

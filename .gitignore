@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+*.bat
 
 # Compiled Object files
 *.slo
@@ -48,3 +49,44 @@ makefile
 
 # Vscode
 .vscode
+
+# Ninja builds
+.ninja_deps
+.ninja_log
+.ninja
+
+# OpenSSL-related files best not committed
+
+## Certificate Authority
+*.ca
+
+## Certificate
+*.crt
+
+## Certificate Sign Request
+*.csr
+
+## Certificate
+*.der
+
+## Key database file
+*.kdb
+
+## OSCP request data
+*.org
+
+## PKCS #12
+*.p12
+
+## PEM-encoded certificate data
+*.pem
+
+## Random number seed
+*.rnd
+
+## SSLeay data
+*.ssleay
+
+## S/MIME message
+*.smime
+build.ninja
